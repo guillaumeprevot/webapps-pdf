@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<title>PDF.js 1.3.91</title>
+		<meta charset="UTF-8">
+		<script type="application/javascript" src="../webapp/libs/pdfjs/pdf.js"></script>
+		<script>
+
+function previewPDF(url, canvas, maxWidth, maxHeight, pageNumber) {
+	PDFJS.disableWorker = true;
+	PDFJS.getDocument(url).then(function(pdf) {
+		pdf.getPage(pageNumber || 1).then(function(page) {
+			// Calculate canvas dimensions
+			var view = page.view; // [0,0,612,792]
+			var width = view[2];
+			var height = view[3];
+			if (maxWidth && width > maxWidth) {
+				height = height * maxWidth / width;
+				width = maxWidth;
+			}
+			if (maxHeight && height > maxHeight) {
+				width = width * maxHeight / height;
+				height = maxHeight;
+			}
+			canvas.width = width;
+			canvas.height = height;
+			if (maxHeight)
+				canvas.style.marginTop = ((maxHeight - canvas.height) / 2) + 'px';
+			if (maxWidth)
+				canvas.style.marginLeft = ((maxWidth - canvas.width) / 2) + 'px';
+
+			// Draw page
+			var rotation = 0;
+			var scale = canvas.width / view[2];
+			var viewport = page.getViewport(scale, rotation);
+			var renderContext = {
+				canvasContext: canvas.getContext('2d'),
+				viewport: viewport
+			};
+			var renderTask = page.render(renderContext);
+			renderTask.promise.then(function() {
+				console.log('done !');
+			});
+		});
+	});
+}
+
+function previewPDFTest() {
+	previewPDF('test.pdf', document.getElementById('canvas'), 250, 250, 2);
+}
+		</script>
+	</head>
+	<body style="margin: 0; padding: 0; background-color: #404040;" onload="previewPDFTest();">
+		<div style="margin: 30px; text-align: center; ">
+			<canvas id="canvas" style="box-shadow: 5px 5px 5px #202020; "></canvas>
+		</div>
+	</body>
+</html>
