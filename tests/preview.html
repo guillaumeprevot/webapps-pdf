@@ -6,6 +6,7 @@
 		<script type="application/javascript" src="../webapp/libs/pdfjs/pdf.js"></script>
 		<script>
 
+/** Cette fonction a pour but de proposer un code simple de création de miniature d'un document PDF */
 function previewPDF(url, canvas, maxWidth, maxHeight, pageNumber) {
 	PDFJS.disableWorker = true;
 	PDFJS.getDocument(url).then(function(pdf) {

@@ -8,8 +8,15 @@ body { padding-top: 54px; background-color: #404040; }
 #pdf-toolbar .btn-default, #pdf-toolbar .btn:hover[disabled] { color: #bbb; background-color: #444; border-color: #222; }
 #pdf-toolbar .btn-default:focus, #pdf-toolbar .btn-default:hover { color: #ddd; background-color: #666; }
 
+#pdf-toolbar #open-file-input { display: none; }
+#pdf-toolbar #pages { color: #999; background-color: #444; border-color: #222; }
+#pdf-toolbar #page-input { width: 33px; border: 0; color: #ccc; background-color: #666; text-align: center; }
+#pdf-toolbar #rotate-ccw { transform: scaleX(-1); }
+
+#pdf-container { margin: 10px auto; display: none; }
+#pdf-container > canvas { display: block; margin: auto; box-shadow: 5px 5px 5px #202020; }
+
 #pdf-start, #pdf-wait { font-size: 14pt; text-align: center; position: fixed; left: 50%; top: 40%; width: 20em; margin-left: -10em; padding: 2.5em; border: 1px solid #337AB7; color: #337AB7; }
-#pages { color: #999; background-color: #444; border-color: #222; }
-#page-num { width: 33px; border: 0; color: #ccc; background-color: #666; text-align: center; }
+#pdf-wait { display: none; }
 
 #pdf-copyright { position: fixed; left: 0; bottom: 0; right: 0; padding: 5px 10px; background-color: #404040; color: white; text-align: right; font-size: smaller; }

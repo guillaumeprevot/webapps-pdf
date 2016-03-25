@@ -18,7 +18,9 @@
 	<button type="button" class="btn btn-default" title="Aide ..." data-toggle="modal" data-target="#pdf-help"><span class="glyphicon glyphicon-question-sign"></span></button>
 
 	<button type="button" id="open-file-button" class="btn btn-default" title="Ouvrir un fichier ..."><span class="glyphicon glyphicon-open-file"></span></button>
-	<input type="file" id="open-file-input" accept=".pdf" style="display: none; "/>
+	<input type="file" id="open-file-input" accept=".pdf" />
+
+	<button type="button" id="open-url-button" class="btn btn-default" title="Ouvrir une URL ..."><span class="glyphicon glyphicon-cloud-upload"></span></button>
 
 	<div class="input-group" style="display: inline-block; ">
 		<div class="input-group-btn" style="display: inline-block; width: auto; float: left; ">
@@ -26,7 +28,7 @@
 			<button type="button" id="page-previous" class="btn btn-default" title="Page précédente"><span class="glyphicon glyphicon-backward"></span></button>
 		</div>
 		<div id="pages" style="display: inline-block; width: auto; " class="form-control">
-			<span>Page <input type="text" id="page-num" /> sur <span id="page-count"></span></span>
+			<span>Page <input type="text" id="page-input" /> sur <span id="page-count"></span></span>
 		</div>
 		<div class="input-group-btn" style="display: inline-block; width: auto; ">
 			<button type="button" id="page-next" class="btn btn-default" title="Page suivante"><span class="glyphicon glyphicon-forward"></span></button>
@@ -57,26 +59,22 @@
 	</div>
 
 	<div class="btn-group">
-		<button type="button" id="rotate-ccw" class="btn btn-default" title="Rotation anti-horaire"><span class="glyphicon glyphicon-share-alt" style="transform: scaleX(-1);"></span></button>
+		<button type="button" id="rotate-ccw" class="btn btn-default" title="Rotation anti-horaire"><span class="glyphicon glyphicon-share-alt"></span></button>
 		<button type="button" id="rotate-cw" class="btn btn-default" title="Rotation horaire"><span class="glyphicon glyphicon-share-alt"></span></button>
 	</div>
 </div>
 
-
-<div style="margin: 10px auto; display: none; ">
-	<canvas id="pdf-canvas" style="display: block; margin: auto; box-shadow: 5px 5px 5px #202020;"></canvas>
+<div id="pdf-container">
+	<canvas></canvas>
 </div>
 
 <a id="pdf-start" href="#">Ouvrir un fichier PDF en cliquant ou en le déposant ici</a>
-<div id="pdf-wait" style="display: none; ">Chargement en cours ...</div>
+
+<div id="pdf-wait">Chargement en cours ...</div>
 
 <div id="pdf-help" class="modal fade" tabindex="-1" role="dialog">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
-			<div class="modal-header" style="display: none;">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">Contrôles</h4>
-			</div>
 			<div class="modal-body">
 				<ul class="nav nav-tabs" role="tablist">
 					<li role="presentation" class="active"><a href="#help1" aria-controls="help1" role="tab" data-toggle="tab">Contrôles</a></li>
@@ -86,14 +84,16 @@
 				<div class="tab-content">
 					<div role="tabpanel" id="help1" class="tab-pane active">
 						<table id="pdf-controls" class="table">
-							<tr><th>Fonction</th><th>Clavier</th><th>Souris</th></tr>
-							<tr><td>Première page</td><td><code>Début</code> ou <code>Ctrl+Gauche</code></td><td><code>Ctrl+ scroll haut</code></td></tr>
-							<tr><td>Page précédente</td><td><code>Page Préc.</code> ou <code>Gauche</code></td><td><code>Scroll haut</code></td></tr>
-							<tr><td>Page suivante</td><td><code>Page Suiv.</code> ou <code>Droite</code></td><td><code>Scroll bas</code></td></tr>
-							<tr><td>Dernière page</td><td><code>Fin</code> ou <code>Ctrl+Droite</code></td><td><code>Ctrl+ scroll bas</code></td></tr>
-							<tr><td>Zoom arrière</td><td><code>-</code></td><td><code>Bouton droit</code></td></tr>
-							<tr><td>Zoom ajusté (page entière)</td><td><code>0</code> (zéro)</td><td><code>Double-clic</code></td></tr>
-							<tr><td>Zoom avant</td><td><code>+</code></td><td><code>Bouton gauche</code></td></tr>
+							<tr><th>Fonction</th><th>Clavier</th></tr>
+							<tr><td>Première page</td><td><code>Début</code></td></tr>
+							<tr><td>Page précédente</td><td><code>Page Préc.</code></td></tr>
+							<tr><td>Page suivante</td><td><code>Page Suiv.</code></td></tr>
+							<tr><td>Dernière page</td><td><code>Fin</code></td></tr>
+							<tr><td>Zoom arrière</td><td><code>-</code></td></tr>
+							<tr><td>Zoom ajusté (page entière)</td><td><code>0</code> (zéro) ou <code>Double-clic</code></td></tr>
+							<tr><td>Zoom avant</td><td><code>+</code></td></tr>
+							<tr><td>Rotation horaire</td><td><code>Alt</code> + <code>Flêche droite</code></td></tr>
+							<tr><td>Rotation anti-horaire</td><td><code>Alt</code> + <code>Flêche gauche</code></td></tr>
 						</table>
 					</div>
 					<div role="tabpanel" id="help2" class="tab-pane">
@@ -109,9 +109,6 @@
 						</ul>
 					</div>
 				</div>
-			</div>
-			<div class="modal-footer" style="display: none;">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
 			</div>
 		</div>
 	</div>
