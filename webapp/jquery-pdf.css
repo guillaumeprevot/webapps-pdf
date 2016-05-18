@@ -1,0 +1,29 @@
+@CHARSET "UTF-8";
+
+.pdf-toolbar > .btn { margin-bottom: 5px; margin-right: 5px; border-radius: 4px; border-width: 0; border-collapse: collapse; }
+.pdf-toolbar > .btn-group { margin-bottom: 5px; border-width: 0; }
+.pdf-toolbar > span.btn > input { padding: 0; }
+
+.pdf-toolbar > .pdf-page-first,
+.pdf-toolbar > .pdf-page-previous,
+.pdf-toolbar > span.btn,
+.pdf-toolbar > .pdf-page-next,
+.pdf-toolbar > .pdf-zoom-out,
+.pdf-toolbar > .btn-group > .pdf-zoom-menu,
+.pdf-toolbar > .pdf-rotate-ccw { border-top-right-radius: 0; border-bottom-right-radius: 0; border-right-width: 1px; margin-right: 0; }
+
+.pdf-toolbar > .pdf-page-previous,
+.pdf-toolbar > span.btn,
+.pdf-toolbar > .pdf-page-next,
+.pdf-toolbar > .pdf-page-last,
+.pdf-toolbar > .pdf-zoom-in,
+.pdf-toolbar > .btn-group > .pdf-zoom-menu,
+.pdf-toolbar > .pdf-rotate-cw { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left-width: 1px; }
+
+.pdf-toolbar .btn-default, .pdf-toolbar .btn:hover[disabled] { color: #bbb; background-color: #444; border-color: #333; }
+.pdf-toolbar .btn-default:focus, .pdf-toolbar .btn-default:hover { color: #ddd; background-color: #666; }
+.pdf-toolbar > span.btn { color: #999; background-color: #444; border-color: #333; }
+.pdf-toolbar > span.btn > input { color: #ccc; background-color: #666; }
+
+.pdf-container { padding: 10px; overflow: auto; }
+.pdf-container > canvas { display: block; margin: 0 auto; box-shadow: 5px 5px 5px #202020; }

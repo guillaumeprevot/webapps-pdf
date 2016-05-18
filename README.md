@@ -8,8 +8,8 @@ A simple PDF viewer using [PDF.js](http://mozilla.github.io/pdf.js/) from [Mozil
 
 Les librairies suivantes ont été utilisées pour cette application :
 
-- [PDF.js 1.3.91](http://mozilla.github.io/pdf.js/) sous licence Apache 2
-- [jQuery 2.2.2](http://jquery.com/) sous licence MIT
+- [PDF.js 1.5.188](http://mozilla.github.io/pdf.js/) sous licence Apache 2
+- [jQuery 2.2.3](http://jquery.com/) sous licence MIT
 - [Bootstrap 3.3.6](http://getbootstrap.com/css/) sous licence MIT
 
 L'application est fournie avec un fichier manifest `webapps-pdf.appcache` permettant la mise en cache et l'utilisation en mode déconnecté. Plus d'info chez Mozilla [en français](https://developer.mozilla.org/fr/docs/Utiliser_Application_Cache) ou [en anglais](https://developer.mozilla.org/en-US/docs/Web/HTML/Using_the_application_cache).
@@ -21,3 +21,14 @@ NB : quand le certificat HTTPS est incorrect, la mise en cache échouera sous Ch
 ### Présentation de l'IHM
 
 ![Présentation de l'IHM](./screenshots/webapps-pdf-1.png)
+
+### Changelog
+
+2016-03-25
+- Première version
+
+2016-05-18
+- Refactoring sous la forme d'un couple de composant PDFViewer / PDFToolbar
+- Récupération de la langue du navigateur pour proposer le français ou l'anglais par défaut
+- Correction du style CSS pour mieux aligner les composants de la barre d'outils
+- mise à jour de jQuery (2.2.2 vers 2.2.3) et PDF.js (1.3.91 vers 1.5.188)

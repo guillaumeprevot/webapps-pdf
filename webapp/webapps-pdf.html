@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="./webapps-pdf.appcache">
+<html id="pdf-test" manifest="./webapps-pdf.appcache">
 	<head>
 		<title>PDFViewer</title>
 		<meta charset="UTF-8">
@@ -7,112 +7,26 @@
 		<meta name="robots" content="noindex, nofollow" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" type="text/css" href="./libs/bootstrap/css/bootstrap.min.css" />
-		<link rel="stylesheet" type="text/css" href="./webapps-pdf.css" />
+		<link rel="stylesheet" type="text/css" href="./jquery-pdf.css" />
 		<link href="./webapps-pdf.ico" rel="shortcut icon" />
 		<link href="./webapps-pdf.ico" rel="icon" type="image/x-icon" />
 		<link href="./webapps-pdf.png" rel="icon" type="image/png" sizes="16x16" />
+		<style>
+#pdf-test { width: 100%; height: 100%; }
+#pdf-test > body { padding-top: 54px; background-color: #404040; }
+#pdf-test > body > #pdf-toolbar { display: none; position: fixed; z-index: 1; left: 0; top: 0; right: 0; padding: 10px 10px 5px; background-color: #333; color: white; height: auto; }
+#pdf-test > body > #pdf-container { display: none; position: fixed; z-index: 0; left: 0; top: 54px; right: 0; bottom: 26px; }
+#pdf-test > body > #pdf-start, #pdf-test > body > #pdf-wait { font-size: 14pt; text-align: center; position: fixed; left: 50%; top: 40%; width: 20em; margin-left: -10em; padding: 2.5em; border: 1px solid #337AB7; color: #337AB7; }
+#pdf-test > body > #pdf-wait { display: none; }
+#pdf-test > body > #pdf-copyright { position: fixed; z-index: 1; left: 0; bottom: 0; right: 0; padding: 5px 10px; background-color: #404040; color: white; text-align: right; font-size: smaller; }
+		</style>
 	</head>
 	<body>
 
-<div id="pdf-toolbar">
-	<button type="button" class="btn btn-default" title="Aide ..." data-toggle="modal" data-target="#pdf-help"><span class="glyphicon glyphicon-question-sign"></span></button>
-
-	<button type="button" id="open-file-button" class="btn btn-default" title="Ouvrir un fichier ..."><span class="glyphicon glyphicon-open-file"></span></button>
-	<input type="file" id="open-file-input" accept=".pdf" />
-
-	<button type="button" id="open-url-button" class="btn btn-default" title="Ouvrir une URL ..."><span class="glyphicon glyphicon-cloud-upload"></span></button>
-
-	<div class="input-group" style="display: inline-block; ">
-		<div class="input-group-btn" style="display: inline-block; width: auto; float: left; ">
-			<button type="button" id="page-first" class="btn btn-default" title="Première page"><span class="glyphicon glyphicon-step-backward"></span></button>
-			<button type="button" id="page-previous" class="btn btn-default" title="Page précédente"><span class="glyphicon glyphicon-backward"></span></button>
-		</div>
-		<div id="pages" style="display: inline-block; width: auto; " class="form-control">
-			<span>Page <input type="text" id="page-input" /> sur <span id="page-count"></span></span>
-		</div>
-		<div class="input-group-btn" style="display: inline-block; width: auto; ">
-			<button type="button" id="page-next" class="btn btn-default" title="Page suivante"><span class="glyphicon glyphicon-forward"></span></button>
-			<button type="button" id="page-last" class="btn btn-default" title="Dernière page"><span class="glyphicon glyphicon-step-forward"></span></button>
-		</div>
-	</div>
-
-	<div class="btn-group">
-		<button type="button" id="zoom-out" class="btn btn-default" title="Zoom arrière"><span class="glyphicon glyphicon-minus"></span></button>
-		<div class="btn-group" role="group">
-			<button type="button" class="btn btn-default dropdown-toggle" title="Zoom autres" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="scale-value"></span>&nbsp;%&nbsp;<span class="caret"></span></button>
-			<ul class="dropdown-menu">
-				<li><a href="#" id="zoom-real">Taille réelle</a></li>
-				<li><a href="#" id="zoom-fit">Page entière</a></li>
-				<li><a href="#" id="zoom-width">Pleine largeur</a></li>
-				<li role="separator" class="divider"></li>
-				<li><a href="#" class="zoom-pct" data-value="50">50 %</a></li>
-				<li><a href="#" class="zoom-pct" data-value="75">75 %</a></li>
-				<li><a href="#" class="zoom-pct" data-value="100">100 %</a></li>
-				<li><a href="#" class="zoom-pct" data-value="125">125 %</a></li>
-				<li><a href="#" class="zoom-pct" data-value="150">150 %</a></li>
-				<li><a href="#" class="zoom-pct" data-value="200">200 %</a></li>
-				<li><a href="#" class="zoom-pct" data-value="300">300 %</a></li>
-				<li><a href="#" class="zoom-pct" data-value="400">400 %</a></li>
-			</ul>
-		</div>
-		<button type="button" id="zoom-in" class="btn btn-default" title="Zoom avant"><span class="glyphicon glyphicon-plus"></span></button>
-	</div>
-
-	<div class="btn-group">
-		<button type="button" id="rotate-ccw" class="btn btn-default" title="Rotation anti-horaire"><span class="glyphicon glyphicon-share-alt"></span></button>
-		<button type="button" id="rotate-cw" class="btn btn-default" title="Rotation horaire"><span class="glyphicon glyphicon-share-alt"></span></button>
-	</div>
-</div>
-
-<div id="pdf-container">
-	<canvas></canvas>
-</div>
-
-<a id="pdf-start" href="#">Ouvrir un fichier PDF en cliquant ou en le déposant ici</a>
-
+<div id="pdf-toolbar"></div>
+<div id="pdf-container"></div>
+<a  href="#" id="pdf-start">Ouvrir un fichier PDF en cliquant ou en le déposant ici</a>
 <div id="pdf-wait">Chargement en cours ...</div>
-
-<div id="pdf-help" class="modal fade" tabindex="-1" role="dialog">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-body">
-				<ul class="nav nav-tabs" role="tablist">
-					<li role="presentation" class="active"><a href="#help1" aria-controls="help1" role="tab" data-toggle="tab">Contrôles</a></li>
-					<li role="presentation"><a href="#help2" aria-controls="help2" role="tab" data-toggle="tab">Propriétés</a></li>
-					<li role="presentation"><a href="#help3" aria-controls="help3" role="tab" data-toggle="tab">Reste à faire</a></li>
-				</ul>
-				<div class="tab-content">
-					<div role="tabpanel" id="help1" class="tab-pane active">
-						<table id="pdf-controls" class="table">
-							<tr><th>Fonction</th><th>Clavier</th></tr>
-							<tr><td>Première page</td><td><code>Début</code></td></tr>
-							<tr><td>Page précédente</td><td><code>Page Préc.</code></td></tr>
-							<tr><td>Page suivante</td><td><code>Page Suiv.</code></td></tr>
-							<tr><td>Dernière page</td><td><code>Fin</code></td></tr>
-							<tr><td>Zoom arrière</td><td><code>-</code></td></tr>
-							<tr><td>Zoom ajusté (page entière)</td><td><code>0</code> (zéro) ou <code>Double-clic</code></td></tr>
-							<tr><td>Zoom avant</td><td><code>+</code></td></tr>
-							<tr><td>Rotation horaire</td><td><code>Alt</code> + <code>Flêche droite</code></td></tr>
-							<tr><td>Rotation anti-horaire</td><td><code>Alt</code> + <code>Flêche gauche</code></td></tr>
-						</table>
-					</div>
-					<div role="tabpanel" id="help2" class="tab-pane">
-						<table id="pdf-metadata" class="table">
-							<thead><tr><th>Propriété</th><th>Valeur</th></tr></thead>
-							<tbody></tbody>
-						</table>
-					</div>
-					<div role="tabpanel" id="help3" class="tab-pane">
-						<br />
-						<ul>
-							<li>Texte (sélection + recherche) en utilisant <code>page.getTextContent</code>. Exemple <a href="https://github.com/vivin/pdfjs-text-selection-demo/blob/master/js/minimal.js">ici</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 
 <div id="pdf-copyright">
 	Développé par <a target="_blank" href="https://github.com/guillaumeprevot">Tech GP</a>
@@ -126,6 +40,36 @@
 		<script type="text/javascript" src="./libs/bootstrap/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="./libs/pdfjs/pdf.js"></script>
 		<script type="text/javascript" src="./libs/pdfjs/pdf.worker.js"></script>
-		<script type="text/javascript" src="./webapps-pdf.js"></script>
+		<script type="text/javascript" src="./jquery-pdf.js"></script>
+		<script type="text/javascript">
+$(function() {
+	// PDFJS.disableWorker = true;
+	// PDFJS.workerSrc = './libs/pdfjs/pdf.worker.js';
+	var lang = PDFLang[navigator.language] || PDFLang['en'];
+	var viewer = new PDFViewer($('#pdf-container'), lang);
+	var toolbar = new PDFToolbar(viewer, $('#pdf-toolbar'), lang, {
+		showOpenFile: true,
+		showOpenURL: true,
+		showAbout: true,
+	});
+
+	viewer.on('load', function(event, data) {
+		$('#pdf-start').hide();
+		$('#pdf-wait').show();
+		$('#pdf-container').hide();
+		$('#pdf-toolbar').hide();
+	});
+
+	viewer.on('pagechanged', function(event, data) {
+		$('#pdf-wait').hide();
+		$('#pdf-container').show();
+		$('#pdf-toolbar').show();
+	});
+
+	$('#pdf-start').on('click', function() {
+		$('#pdf-toolbar input.pdf-open-file').click();
+	});
+});
+		</script>
 	</body>
 </html>
