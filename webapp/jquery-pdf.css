@@ -27,3 +27,8 @@
 
 .pdf-container { padding: 10px; overflow: auto; }
 .pdf-container > canvas { display: block; margin: 0 auto; box-shadow: 5px 5px 5px #202020; }
+.pdf-container > div { display: block; margin: 0 auto; position: relative; height: 0; }
+.pdf-container > div > div { position: absolute; white-space: pre; line-height: 1; direction: ltr; color: transparent; background-color: transparent; cursor: text; }
+
+::selection { background: rgba(51,122,183,0.3); }
+::-moz-selection { background: rgba(51,122,183,0.3); }

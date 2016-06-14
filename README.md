@@ -32,3 +32,7 @@ NB : quand le certificat HTTPS est incorrect, la mise en cache échouera sous Ch
 - Récupération de la langue du navigateur pour proposer le français ou l'anglais par défaut
 - Correction du style CSS pour mieux aligner les composants de la barre d'outils
 - mise à jour de jQuery (2.2.2 vers 2.2.3) et PDF.js (1.3.91 vers 1.5.188)
+
+2016-06-14
+- Récupération du texte de la page affichée pour permettre la recherche et la sélection.
+- LIMITATION : texte justifié ou avec tabulation mal dimensionné. Voir si on ne pourrait demander à PDF.js d'énumérer les éléments dessinés sur le canvas au fur et à mesure.

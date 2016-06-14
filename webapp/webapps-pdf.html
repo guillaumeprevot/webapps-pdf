@@ -46,7 +46,7 @@ $(function() {
 	// PDFJS.disableWorker = true;
 	// PDFJS.workerSrc = './libs/pdfjs/pdf.worker.js';
 	var lang = PDFLang[navigator.language] || PDFLang['en'];
-	var viewer = new PDFViewer($('#pdf-container'), lang);
+	var viewer = new PDFViewer($('#pdf-container'), lang, true);
 	var toolbar = new PDFToolbar(viewer, $('#pdf-toolbar'), lang, {
 		showOpenFile: true,
 		showOpenURL: true,

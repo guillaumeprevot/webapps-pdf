@@ -100,7 +100,7 @@ PDFLang['en'] = {
 	},
 };
 
-function PDFViewer(container, lang) {
+function PDFViewer(container, lang, textLayer) {
 	// load, loaded, scalechanged, pagechanged
 	this.container = container.addClass('pdf-container');
 	this.lang = lang;
@@ -110,6 +110,7 @@ function PDFViewer(container, lang) {
 	this.pageIndexPending = null;
 	this.scale = 80;
 	this.rotation = 0;
+	this.textLayer = textLayer ? $('<div />').appendTo(this.container)[0] : undefined;
 	this.canvas = $('<canvas />').appendTo(this.container)[0];
 	this.canvasContext = this.canvas.getContext('2d');
 
@@ -262,13 +263,7 @@ PDFViewer.prototype.renderPage = function(pageIndex) {
 		// OK, dessiner la page demandée
 		viewer.pageRendering = true;
 		viewer.pdf.getPage(pageIndex).then(function(page) {
-			/*
-			console.log(page); // page = { pageIndex: 0, pageInfo: { rotate: 0, view:[t,l,w,h]} }
-			page.getTextContent({ normalizeWhitespace: true }).then(function(textContent) {
-				console.log(textContent.items); // { width: float, height: float, str: 'text', transform: float[6]}
-				console.log($.map(textContent.items, (i) => i.str).join(' '));
-			});
-			*/
+			// console.log(page); // page = { pageIndex: 0, pageInfo: { rotate: 0, view:[t,l,w,h]} }
 
 			var viewport = page.getViewport(viewer.scale / 100.0, viewer.rotation);
 			viewer.trigger('scalechanged', {
@@ -276,6 +271,10 @@ PDFViewer.prototype.renderPage = function(pageIndex) {
 			});
 			viewer.canvas.height = viewport.height;
 			viewer.canvas.width = viewport.width;
+			if (!!viewer.textLayer) {
+				viewer.textLayer.textContent = '';
+				viewer.textLayer.style.width = viewport.width + 'px';
+			}
 
 			viewer.pageIndex = pageIndex;
 			viewer.trigger('pagechanged', {
@@ -296,8 +295,52 @@ PDFViewer.prototype.renderPage = function(pageIndex) {
 					viewer.renderPage(n);
 				}
 			});
+
+			if (!!viewer.textLayer) {
+				page.getTextContent(/*{ normalizeWhitespace: true }*/).then(function(textContent) {
+					// console.log($.map(textContent.items, (i) => i.str).join(' '));
+					var textItems = textContent.items;
+					for (var i = 0, len = textItems.length; i < len; i++) {
+						viewer.appendText(viewport, textItems[i], textContent.styles);
+					}
+				});
+			}
 		});
 	}
+};
+
+/** Ajouter au DOM un élément de texte de la page en cours */
+PDFViewer.prototype.appendText = function(viewport, item, styles) {
+	var style = styles[item.fontName];
+	var tx = PDFJS.Util.transform(viewport.transform, item.transform);
+	//var pos = viewport.convertToViewportPoint(item.transform[4], item.transform[5]);
+	var fontHeight = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3]));
+	var fontAscent = fontHeight * (style.ascent ? style.ascent : (style.descent ? (1 + style.descent) : 1));
+	var angle = Math.atan2(tx[1], tx[0]) + (style.vertical ? Math.PI / 2 : 0);
+	var left = tx[4] + fontAscent * (angle === 0 ? 0 : Math.sin(angle));
+	var top = tx[5] - fontAscent * (angle === 0 ? 1 : Math.cos(angle));
+	var rotate = (angle === 0) ? '' : ('rotate(' + (angle * (180 / Math.PI)) + 'deg)');
+	var scale = '';
+	/*
+	if (item.str.length > 1) {
+		this.canvasContext.font = fontHeight + 'px ' + item.fontName;
+		var width = this.canvasContext.measureText(item.str).width;
+		var textScale = (style.vertical ? item.height : item.width) * viewport.scale / width;
+		scale = 'scaleX(' + textScale + ')';
+	}
+	*/
+
+	var textDiv = document.createElement('div');
+	textDiv.style.left = left + 'px';
+	textDiv.style.top = top + 'px';
+	textDiv.style.fontSize = fontHeight + 'px';
+	textDiv.style.fontFamily = item.fontName;
+	if (item.dir === 'rtl')
+		textDiv.style.direction = 'rtl';
+	if (scale || rotate)
+		textDiv.style.transform = rotate + ' ' + scale;
+	textDiv.textContent = item.str;
+	this.textLayer.appendChild(textDiv);
 };
 
 /** Zoomer un peu plus (+10 entre 0 et 100, +20 entre 100 et 200, +30 entre 200 et 300, ...) */
