@@ -22,17 +22,24 @@ NB : quand le certificat HTTPS est incorrect, la mise en cache échouera sous Ch
 
 ![Présentation de l'IHM](./screenshots/webapps-pdf-1.png)
 
-### Changelog
+## Licence
+
+Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ici présent.
+
+## Changelog
 
 2016-03-25
-- Première version
+- première version
 
 2016-05-18
-- Refactoring sous la forme d'un couple de composant PDFViewer / PDFToolbar
-- Récupération de la langue du navigateur pour proposer le français ou l'anglais par défaut
-- Correction du style CSS pour mieux aligner les composants de la barre d'outils
+- refactoring sous la forme d'un couple de composant PDFViewer / PDFToolbar
+- récupération de la langue du navigateur pour proposer le français ou l'anglais par défaut
+- correction du style CSS pour mieux aligner les composants de la barre d'outils
 - mise à jour de jQuery (2.2.2 vers 2.2.3) et PDF.js (1.3.91 vers 1.5.188)
 
 2016-06-14
-- Récupération du texte de la page affichée pour permettre la recherche et la sélection.
+- récupération du texte de la page affichée pour permettre la recherche et la sélection.
 - LIMITATION : texte justifié ou avec tabulation mal dimensionné. Voir si on ne pourrait demander à PDF.js d'énumérer les éléments dessinés sur le canvas au fur et à mesure.
+
+2016-06-28
+- ajout du fichier LICENCE
