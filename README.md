@@ -9,7 +9,7 @@ A simple PDF viewer using [PDF.js](http://mozilla.github.io/pdf.js/) from [Mozil
 Les librairies suivantes ont été utilisées pour cette application :
 
 - [PDF.js 1.5.188](http://mozilla.github.io/pdf.js/) sous licence Apache 2
-- [jQuery 2.2.3](http://jquery.com/) sous licence MIT
+- [jQuery 2.2.4](http://jquery.com/) sous licence MIT
 - [Bootstrap 3.3.6](http://getbootstrap.com/css/) sous licence MIT
 
 L'application est fournie avec un fichier manifest `webapps-pdf.appcache` permettant la mise en cache et l'utilisation en mode déconnecté. Plus d'info chez Mozilla [en français](https://developer.mozilla.org/fr/docs/Utiliser_Application_Cache) ou [en anglais](https://developer.mozilla.org/en-US/docs/Web/HTML/Using_the_application_cache).
@@ -43,3 +43,6 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 
 2016-06-28
 - ajout du fichier LICENCE
+
+2016-07-16
+- mise à jour de jQuery (2.2.3 vers 2.2.4)
