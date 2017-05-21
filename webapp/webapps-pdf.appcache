@@ -4,6 +4,9 @@ CACHE MANIFEST
 
 CACHE:
 ./libs/bootstrap/css/bootstrap.min.css
+./libs/bootstrap/fonts/glyphicons-halflings-regular.ttf
+./libs/bootstrap/fonts/glyphicons-halflings-regular.woff
+./libs/bootstrap/fonts/glyphicons-halflings-regular.woff2
 ./libs/bootstrap/js/bootstrap.min.js
 ./libs/jquery/jquery.min.js
 ./libs/pdfjs/pdf.js
