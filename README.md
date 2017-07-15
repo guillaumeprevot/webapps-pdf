@@ -49,3 +49,6 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 
 2017-05-21
 - mise à jour de jQuery (2.2.4 en 3.2.1), Bootstrap (3.3.6 en 3.3.7) et PDF.js (1.5.188 en 1.7.225)
+
+2017-07-15
+- correction de l'affichage des pages pivotées dans certains fichiers PDF 

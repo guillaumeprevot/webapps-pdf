@@ -265,7 +265,7 @@ PDFViewer.prototype.renderPage = function(pageIndex) {
 		viewer.pdf.getPage(pageIndex).then(function(page) {
 			// console.log(page); // page = { pageIndex: 0, pageInfo: { rotate: 0, view:[t,l,w,h]} }
 
-			var viewport = page.getViewport(viewer.scale / 100.0, viewer.rotation);
+			var viewport = page.getViewport(viewer.scale / 100.0, viewer.rotation + page.pageInfo.rotate);
 			viewer.trigger('scalechanged', {
 				scale: viewer.scale
 			});
