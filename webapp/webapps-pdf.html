@@ -8,8 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" type="text/css" href="./libs/bootstrap/css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="./jquery-pdf.css" />
-		<link href="./webapps-pdf.ico" rel="shortcut icon" />
-		<link href="./webapps-pdf.ico" rel="icon" type="image/x-icon" />
+		<link href="./webapps-pdf.ico" rel="shortcut icon" type="image/x-icon" />
 		<link href="./webapps-pdf.png" rel="icon" type="image/png" sizes="16x16" />
 		<style>
 #pdf-test { width: 100%; height: 100%; }
@@ -23,7 +22,9 @@
 	</head>
 	<body>
 
-<div id="pdf-toolbar"></div>
+<div id="pdf-toolbar">
+	<a id="pdf-back" href="#" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span></a>
+</div>
 <div id="pdf-container"></div>
 <a  href="#" id="pdf-start">Ouvrir un fichier PDF en cliquant ou en le déposant ici</a>
 <div id="pdf-wait">Chargement en cours ...</div>
@@ -38,21 +39,36 @@
 
 		<script type="text/javascript" src="./libs/jquery/jquery.min.js"></script>
 		<script type="text/javascript" src="./libs/bootstrap/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="./libs/pdfjs/compatibility.js"></script>
 		<script type="text/javascript" src="./libs/pdfjs/pdf.js"></script>
-		<script type="text/javascript" src="./libs/pdfjs/pdf.worker.js"></script>
 		<script type="text/javascript" src="./jquery-pdf.js"></script>
 		<script type="text/javascript">
 $(function() {
-	// PDFJS.disableWorker = true;
-	// PDFJS.workerSrc = './libs/pdfjs/pdf.worker.js';
-	var lang = PDFLang[navigator.language] || PDFLang['en'];
-	var viewer = new PDFViewer($('#pdf-container'), lang, true);
-	var toolbar = new PDFToolbar(viewer, $('#pdf-toolbar'), lang, {
+	// Options d'affichage
+	var options = {
 		showOpenFile: true,
 		showOpenURL: true,
 		showAbout: true,
-	});
+		loadURL: '',
+		fromURL: '',
+		fromTitle: '',
+	};
+
+	// Personnalisation des options d'affichage
+	if (window.location.hash && window.location.hash != '#')
+		$.extend(options, JSON.parse(window.atob(window.location.hash.substring(1))));
+	if (window.location.search && window.location.search != '?') {
+		window.location.search.substring(1).split('&').forEach(function(pair) {
+			var tokens = pair.split('=');
+			if (typeof options[tokens[0]] === 'boolean')
+				options[tokens[0]] = tokens[1] === 'true';
+			else
+				options[tokens[0]] = decodeURIComponent(tokens[1]);
+		});
+	}
+
+	var lang = PDFLang[navigator.language] || PDFLang['en'];
+	var viewer = new PDFViewer($('#pdf-container'), lang, true);
+	var toolbar = new PDFToolbar(viewer, $('#pdf-toolbar'), lang, options);
 
 	viewer.on('load', function(event, data) {
 		$('#pdf-start').hide();
@@ -70,6 +86,11 @@ $(function() {
 	$('#pdf-start').on('click', function() {
 		$('#pdf-toolbar input.pdf-open-file').click();
 	});
+
+	if (options.loadURL)
+		viewer.loadURL(options.loadURL);
+	if (options.fromURL)
+		$('#pdf-back').attr('href', options.fromURL).attr('title', options.fromTitle).show();
 });
 		</script>
 	</body>

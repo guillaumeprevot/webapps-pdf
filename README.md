@@ -8,13 +8,11 @@ A simple PDF viewer using [PDF.js](http://mozilla.github.io/pdf.js/) from [Mozil
 
 Les librairies suivantes ont été utilisées pour cette application :
 
-- [PDF.js 1.7.225](http://mozilla.github.io/pdf.js/) sous licence Apache 2
-- [jQuery 3.2.1](http://jquery.com/) sous licence MIT
+- [PDF.js 1.9.426](http://mozilla.github.io/pdf.js/) sous licence Apache 2
+- [jQuery 3.3.1](http://jquery.com/) sous licence MIT
 - [Bootstrap 3.3.7](http://getbootstrap.com/css/) sous licence MIT
 
 L'application est fournie avec un fichier manifest `webapps-pdf.appcache` permettant la mise en cache et l'utilisation en mode déconnecté. Plus d'info chez Mozilla [en français](https://developer.mozilla.org/fr/docs/Utiliser_Application_Cache) ou [en anglais](https://developer.mozilla.org/en-US/docs/Web/HTML/Using_the_application_cache).
-
-NB : quand le certificat HTTPS est incorrect, la mise en cache échouera sous Chrome avec l'erreur `Manifest fetch Failed (9)`. Dans ce cas, faites les tests en HTTP et/ou utilisez un certificat valide en production.
 
 ## Captures d'écran
 
@@ -48,7 +46,15 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 - mise à jour de jQuery (2.2.3 vers 2.2.4)
 
 2017-05-21
+- ajout de la font glyphicons à AppCache
 - mise à jour de jQuery (2.2.4 en 3.2.1), Bootstrap (3.3.6 en 3.3.7) et PDF.js (1.5.188 en 1.7.225)
 
 2017-07-15
 - correction de l'affichage des pages pivotées dans certains fichiers PDF 
+
+2018-04-02
+- personnalisation par l'URL de l'affichage de certains boutons (showOpenFile, showOpenURL et showAbout)
+- possibilité d'ouvrir automatiquement une URL via le paramètre "loadURL" (ex: loadURL=.%2Ftest%2Ftest-pdf.pdf)
+- possibilité d'afficher un bouton de retour vers une URL donnée "fromURL" ayant pour titre "fromTitle" (icône fixe)
+- possibilité de passer tous ces paramètres par le hash, par exemple btoa(JSON.stringify({loadURL: ..., fromURL: ..., ...}))
+- mise à jour de jQuery (3.2.1 en 3.3.1) et PDF.js (1.7.225 en 1.9.426)
