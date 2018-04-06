@@ -12,7 +12,7 @@ Les librairies suivantes ont été utilisées pour cette application :
 - [jQuery 3.3.1](http://jquery.com/) sous licence MIT
 - [Bootstrap 3.3.7](http://getbootstrap.com/css/) sous licence MIT
 
-L'application devrait fonctionner correctement est mode déconnecté sous Chrome et Firefox (et [d'autres ?](https://caniuse.com/#search=service+worker) grâce aux **Service Workers**.
+L'application devrait fonctionner correctement est mode déconnecté grâce aux **Service Workers** sous Chrome, Firefox et [d'autres bientôt](https://caniuse.com/#search=service+worker).
 Plus d'infos chez [Google](https://developers.google.com/web/fundamentals/primers/service-workers/) ou [Mozilla](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers).
 
 ## Captures d'écran
