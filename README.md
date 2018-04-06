@@ -4,7 +4,7 @@ A simple PDF viewer using [PDF.js](http://mozilla.github.io/pdf.js/) from [Mozil
 
 ## Présentation
 
-[Cette application](http://techgp.fr/webapps/webapps-pdf.html) écrite en HTML5, JavaScript et CSS3 vous permet de visualiser des fichiers PDF directement dans votre navigateur.
+[Cette application](https://techgp.fr/webapps/webapps-pdf.html) écrite en HTML5, JavaScript et CSS3 vous permet de visualiser des fichiers PDF directement dans votre navigateur.
 
 Les librairies suivantes ont été utilisées pour cette application :
 
