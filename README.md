@@ -12,7 +12,8 @@ Les librairies suivantes ont été utilisées pour cette application :
 - [jQuery 3.3.1](http://jquery.com/) sous licence MIT
 - [Bootstrap 3.3.7](http://getbootstrap.com/css/) sous licence MIT
 
-L'application est fournie avec un fichier manifest `webapps-pdf.appcache` permettant la mise en cache et l'utilisation en mode déconnecté. Plus d'info chez Mozilla [en français](https://developer.mozilla.org/fr/docs/Utiliser_Application_Cache) ou [en anglais](https://developer.mozilla.org/en-US/docs/Web/HTML/Using_the_application_cache).
+L'application devrait fonctionner correctement est mode déconnecté sous Chrome et Firefox (et [d'autres ?](https://caniuse.com/#search=service+worker) grâce aux **Service Workers**.
+Plus d'infos chez [Google](https://developers.google.com/web/fundamentals/primers/service-workers/) ou [Mozilla](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers).
 
 ## Captures d'écran
 
@@ -58,3 +59,8 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 - possibilité d'afficher un bouton de retour vers une URL donnée "fromURL" ayant pour titre "fromTitle" (icône fixe)
 - possibilité de passer tous ces paramètres par le hash, par exemple btoa(JSON.stringify({loadURL: ..., fromURL: ..., ...}))
 - mise à jour de jQuery (3.2.1 en 3.3.1) et PDF.js (1.7.225 en 1.9.426)
+
+2018-04-06
+- utilisation des Service Workers pour la mise en cache au lieu de [Application Cache](https://developer.mozilla.org/fr/docs/Utiliser_Application_Cache)
+- retouche de la largeur des colonnes dans la fenêtre modale (bouton "?")
+- contrôle au clavier basé sur "event.key" plutôt que "event.keyCode" car plus lisible

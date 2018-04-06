@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html id="pdf-test" manifest="./webapps-pdf.appcache">
+<html id="pdf-test">
 	<head>
 		<title>PDFViewer</title>
 		<meta charset="UTF-8">
@@ -9,7 +9,6 @@
 		<link rel="stylesheet" type="text/css" href="./libs/bootstrap/css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="./jquery-pdf.css" />
 		<link href="./webapps-pdf.ico" rel="shortcut icon" type="image/x-icon" />
-		<link href="./webapps-pdf.png" rel="icon" type="image/png" sizes="16x16" />
 		<style>
 #pdf-test { width: 100%; height: 100%; }
 #pdf-test > body { padding-top: 54px; background-color: #404040; }
@@ -42,6 +41,20 @@
 		<script type="text/javascript" src="./libs/pdfjs/pdf.js"></script>
 		<script type="text/javascript" src="./jquery-pdf.js"></script>
 		<script type="text/javascript">
+
+if ('serviceWorker' in navigator && navigator.onLine) {
+	window.addEventListener('load', function() {
+		var href = window.location.href.replace('webapps-pdf.html', 'webapps-pdf-sw.js');
+		navigator.serviceWorker.register(href).then(function(registration) {
+			// Registration was successful
+			console.log('ServiceWorker registration successful with scope: ', registration.scope);
+		}, function(err) {
+			// registration failed :(
+			console.log('ServiceWorker registration failed: ', err);
+		});
+	});
+}
+
 $(function() {
 	// Options d'affichage
 	var options = {

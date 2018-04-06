@@ -1,9 +1,3 @@
-/*
- * TODO
- * Texte (sélection + recherche) en utilisant page.getTextContent.
- * Exemple ici : https://github.com/vivin/pdfjs-text-selection-demo/blob/master/js/minimal.js
- */
-
 var PDFLang = {};
 
 PDFLang['fr'] = {
@@ -403,44 +397,43 @@ PDFViewer.prototype.changeRotation = function(offset) {
 PDFViewer.prototype.onkeypress = function(event) {
 	if (event.target.tagName === 'INPUT' || event.ctrlKey)
 		return;
-	var keyCode = event.which || event.keyCode,
-		prevent = true;
-	switch(keyCode) {
-		case 36: // home
+	var key = event.key, prevent = true;
+	switch (key) {
+		case 'Home':
 			this.renderFirstPage();
 			break;
-		case 33: // pageup
+		case 'PageUp':
 			this.renderPreviousPage();
 			break;
-		case 34: // pagedown
+		case 'PageDown':
 			this.renderNextPage();
 			break;
-		case 35: // end
+		case 'End':
 			this.renderLastPage();
 			break;
-		case 43: //+
+		case '+':
 			this.zoomIn();
 			break;
-		case 45: //-
+		case '-':
 			this.zoomOut();
 			break;
-		case 48: //0
+		case '0':
 			this.zoomFit();
 			break;
-		case 37: // left
+		case 'ArrowLeft':
 			if (event.altKey)
 				this.rotateCounterClockWise();
 			else
 				prevent = false;
 			break;
-		case 39: // right
+		case 'ArrowRight':
 			if (event.altKey)
 				this.rotateClockWise();
 			else
 				prevent = false;
 			break;
-	default:
-		prevent = false;
+		default:
+			prevent = false;
 	}
 	if (prevent)
 		event.preventDefault();
@@ -462,13 +455,23 @@ PDFViewer.prototype.showAbout = function() {
 		+ '        <div class="tab-content">'
 		+ '          <div role="tabpanel" id="pdf-controls" class="tab-pane active">'
 		+ '            <table class="table">'
-		+ '              <thead><tr><th>' + viewer.lang['pdf-about-function']+ '</th><th>' + viewer.lang['pdf-about-keyboard']+ '</th></tr></thead>'
+		+ '              <thead>'
+		+ '                <tr>'
+		+ '                  <th style="width: 200px;">' + viewer.lang['pdf-about-function']+ '</th>'
+		+ '                  <th style="width: auto;">' + viewer.lang['pdf-about-keyboard']+ '</th>'
+		+ '                </tr>'
+		+ '              </thead>'
 		+ '              <tbody></tbody>'
 		+ '            </table>'
 		+ '          </div>'
 		+ '          <div role="tabpanel" id="pdf-metadata" class="tab-pane">'
 		+ '            <table class="table">'
-		+ '              <thead><tr><th>' + viewer.lang['pdf-about-property']+ '</th><th>' + viewer.lang['pdf-about-value']+ '</th></tr></thead>'
+		+ '              <thead>'
+		+ '                <tr>'
+		+ '                  <th style="width: 200px;">' + viewer.lang['pdf-about-property']+ '</th>'
+		+ '                  <th style="width: auto;">' + viewer.lang['pdf-about-value']+ '</th>'
+		+ '                </tr>'
+		+ '              </thead>'
 		+ '              <tbody></tbody>'
 		+ '            </table>'
 		+ '          </div>'
