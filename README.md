@@ -64,3 +64,6 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 - utilisation des Service Workers pour la mise en cache au lieu de [Application Cache](https://developer.mozilla.org/fr/docs/Utiliser_Application_Cache)
 - retouche de la largeur des colonnes dans la fenêtre modale (bouton "?")
 - contrôle au clavier basé sur "event.key" plutôt que "event.keyCode" car plus lisible
+
+2018-04-20
+- correction de la hauteur du bouton "Retour" quand l'option "fromURL" est utilisée
