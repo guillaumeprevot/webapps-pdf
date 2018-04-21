@@ -21,23 +21,31 @@ var baseCacheContent = [
 	'webapps-pdf.png'
 ];
 
+function info(text) {
+	console.log('PDF Service Worker : ' + text);
+}
+
+function trace(text) {
+	// console.log('PDF Service Worker : ' + text);
+}
+
 self.addEventListener('install', function(event) {
-	console.log('PDF Service Worker : installed');
+	info('installed');
 	event.waitUntil(caches.open(cacheName).then(function(cache) {
-		console.log('PDF Service Worker : caching data');
+		info('caching data');
 		return cache.addAll(baseCacheContent).then(function() {
-			console.log('PDF Service Worker : data cached');
+			info('data cached');
 		});
 	}))
 });
 
 self.addEventListener('activate', function(event) {
-	console.log('PDF Service Worker : activated');
+	info('activated');
 	event.waitUntil(caches.keys().then(function(keys) {
 		var cacheWhitelist = [cacheName];
 		return Promise.all(keys.map(function(key) {
 			if (cacheWhitelist.indexOf(key) === -1) {
-				console.log('PDF Service Worker : cleaning old cache ' + key);
+				info('cleaning old cache ' + key);
 				return caches.delete(key);
 			}
 		}));
@@ -45,13 +53,12 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-	console.log('PDF Service Worker : fetching data');
 	event.respondWith(caches.match(event.request).then(function(response) {
 		if (response) {// Found in cache
-			console.log('PDF Service Worker : using cache for ' + event.request.url);
+			trace('using cache for ' + event.request.url);
 			return response;
 		}
-		console.log('PDF Service Worker : fetching data for ' + event.request.url);
+		trace('fetching data for ' + event.request.url);
 		return fetch(event.request).then(function(response) {
 			// Check if we received a valid response
 			if (!response || response.status !== 200 || response.type !== 'basic')
@@ -64,7 +71,7 @@ self.addEventListener('fetch', function(event) {
 			var responseToCache = response.clone();
 
 			caches.open(cacheName).then(function(cache) {
-				console.log('PDF Service Worker : caching response for ' + event.request.url);
+				trace('caching response for ' + event.request.url);
 				cache.put(event.request, responseToCache);
 			});
 
