@@ -8,7 +8,7 @@ A simple PDF viewer using [PDF.js](http://mozilla.github.io/pdf.js/) from [Mozil
 
 Les librairies suivantes ont été utilisées pour cette application :
 
-- [PDF.js 1.9.426](http://mozilla.github.io/pdf.js/) sous licence Apache 2
+- [PDF.js 1.10.100](http://mozilla.github.io/pdf.js/) sous licence Apache 2
 - [jQuery 3.3.1](http://jquery.com/) sous licence MIT
 - [Bootstrap 4.1.3](https://getbootstrap.com/) sous licence MIT
 - [Popper.js 1.14.4](https://popper.js.org/) sous licence MIT
@@ -53,3 +53,5 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 - 2018-04-21 : réorganisation de la section "Changelog"
 - 2018-04-21 : réorganisation des traces "console" du service worker
 - 2018-08-24 : passage sur "Bootstrap 4" (+ Popper + FontAwesome) + refactoring pour gérer un mode "dark" (par défaut) ou "light" (?dark=false)
+- 2018-08-24 : mise à jour de PDF.js (1.9.426 en 1.10.100)
+
