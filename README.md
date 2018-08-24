@@ -23,6 +23,8 @@ Plus d'infos chez [Google](https://developers.google.com/web/fundamentals/primer
 
 ![Présentation de l'IHM](./screenshots/webapps-pdf-1.png)
 
+![Mode clair disponible](./screenshots/webapps-pdf-2.png)
+
 ## Licence
 
 Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ici présent.
@@ -54,4 +56,4 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 - 2018-04-21 : réorganisation des traces "console" du service worker
 - 2018-08-24 : passage sur "Bootstrap 4" (+ Popper + FontAwesome) + refactoring pour gérer un mode "dark" (par défaut) ou "light" (?dark=false)
 - 2018-08-24 : mise à jour de PDF.js (1.9.426 en 1.10.100)
-
+- 2018-08-24 : correction du bandeau inférieur en mode clair + mise à jour des captures d'écran
