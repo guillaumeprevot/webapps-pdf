@@ -12,7 +12,9 @@ PDFLang['fr'] = {
 	'pdf-page-next-key': 'Page suiv.',
 	'pdf-page-last': 'Dernière page',
 	'pdf-page-last-key': 'Fin',
-	'pdf-page-numbering': 'Page %PN% sur %PC%',
+	'pdf-page-numbering-before': 'Page',
+	'pdf-page-numbering-middle': 'sur&nbsp;',
+	'pdf-page-numbering-after': '',
 	'pdf-zoom-out': 'Zoom arrière',
 	'pdf-zoom-out-key': '-',
 	'pdf-zoom-in': 'Zoom avant',
@@ -59,7 +61,9 @@ PDFLang['en'] = {
 	'pdf-page-next-key': 'Page down',
 	'pdf-page-last': 'Last page',
 	'pdf-page-last-key': 'End',
-	'pdf-page-numbering': 'Page %PN% of %PC%',
+	'pdf-page-numbering-before': 'Page',
+	'pdf-page-numbering-middle': 'of&nbsp;',
+	'pdf-page-numbering-after': '',
 	'pdf-zoom-out': 'Zoom out',
 	'pdf-zoom-out-key': '-',
 	'pdf-zoom-in': 'Zoom in',
@@ -445,16 +449,16 @@ PDFViewer.prototype.showAbout = function() {
 
 	var aboutModal = $(''
 		+ '<div id="pdf-about" class="modal fade" tabindex="-1" role="dialog">'
-		+ '  <div class="modal-dialog modal-lg">'
+		+ '  <div class="modal-dialog modal-lg" role="document">'
 		+ '    <div class="modal-content">'
 		+ '      <div class="modal-body">'
-		+ '        <ul class="nav nav-tabs" role="tablist">'
-		+ '          <li role="presentation" class="active"><a href="#pdf-controls" aria-controls="pdf-controls" role="tab" data-toggle="tab">' + viewer.lang['pdf-about-controls']+ '</a></li>'
-		+ '          <li role="presentation"><a href="#pdf-metadata" aria-controls="pdf-metadata" role="tab" data-toggle="tab">' + viewer.lang['pdf-about-properties']+ '</a></li>'
+		+ '        <ul class="nav nav-tabs">'
+		+ '          <li class="nav-item"><a class="nav-link active" href="#pdf-controls" aria-controls="pdf-controls" role="tab" data-toggle="tab" aria-selected="true">' + viewer.lang['pdf-about-controls']+ '</a></li>'
+		+ '          <li class="nav-item"><a class="nav-link" href="#pdf-metadata" aria-controls="pdf-metadata" role="tab" data-toggle="tab" aria-selected="false">' + viewer.lang['pdf-about-properties']+ '</a></li>'
 		+ '        </ul>'
 		+ '        <div class="tab-content">'
 		+ '          <div role="tabpanel" id="pdf-controls" class="tab-pane active">'
-		+ '            <table class="table">'
+		+ '            <table class="table table-sm">'
 		+ '              <thead>'
 		+ '                <tr>'
 		+ '                  <th style="width: 200px;">' + viewer.lang['pdf-about-function']+ '</th>'
@@ -465,7 +469,7 @@ PDFViewer.prototype.showAbout = function() {
 		+ '            </table>'
 		+ '          </div>'
 		+ '          <div role="tabpanel" id="pdf-metadata" class="tab-pane">'
-		+ '            <table class="table">'
+		+ '            <table class="table table-sm">'
 		+ '              <thead>'
 		+ '                <tr>'
 		+ '                  <th style="width: 200px;">' + viewer.lang['pdf-about-property']+ '</th>'
@@ -503,9 +507,16 @@ function PDFToolbar(viewer, container, lang, options) {
 	this.viewer = viewer;
 	this.container = container.addClass('pdf-toolbar');
 	this.lang = lang;
+	if (options.dark) {
+		this.buttonClass = 'btn-dark text-light';
+		this.textClass = 'bg-dark text-light border-0';
+	} else {
+		this.buttonClass = 'btn-light text-dark';
+		this.textClass = 'bg-light text-dark border-0 text-muted';
+	}
 
 	// Ouverture d'un fichier local
-	this.openFileButton = this.buildButton('pdf-open-file', 'glyphicon-open-file').click((function() {
+	this.openFileButton = this.buildButton('pdf-open-file', 'fa-file-upload').click((function() {
 		this.openFileInput.click()
 	}).bind(this));
 	this.openFileInput = $('<input class="pdf-open-file" type="file" accept=".pdf" style="display: none;" />').change((function(event) {
@@ -515,35 +526,44 @@ function PDFToolbar(viewer, container, lang, options) {
 	}).bind(this));
 
 	// Ouverture d'une URL
-	this.openURLButton = this.buildButton('pdf-open-url', 'glyphicon-cloud-upload').click((function() {
+	this.openURLButton = this.buildButton('pdf-open-url', 'fa-cloud-upload-alt').click((function() {
 		var url = window.prompt('URL', '');
 		if (url)
 			this.viewer.loadURL(url);
 	}).bind(this));
 
 	// Bouton "Première page"
-	this.pageFirstButton = this.buildButton('pdf-page-first', 'glyphicon-step-backward').click(this.viewer.renderFirstPage.bind(this.viewer));
+	this.pageFirstButton = this.buildButton('pdf-page-first', 'fa-step-backward').click(this.viewer.renderFirstPage.bind(this.viewer));
 	// Bouton précédent
-	this.pagePreviousButton = this.buildButton('pdf-page-previous', 'glyphicon-backward').click(this.viewer.renderPreviousPage.bind(this.viewer));
+	this.pagePreviousButton = this.buildButton('pdf-page-previous', 'fa-backward').click(this.viewer.renderPreviousPage.bind(this.viewer));
 	// Bouton suivant
-	this.pageNextButton = this.buildButton('pdf-page-next', 'glyphicon-forward').click(this.viewer.renderNextPage.bind(this.viewer));
+	this.pageNextButton = this.buildButton('pdf-page-next', 'fa-forward').click(this.viewer.renderNextPage.bind(this.viewer));
 	// Bouton "Dernière page"
-	this.pageLastButton = this.buildButton('pdf-page-last', 'glyphicon-step-forward').click(this.viewer.renderLastPage.bind(this.viewer));
+	this.pageLastButton = this.buildButton('pdf-page-last', 'fa-step-forward').click(this.viewer.renderLastPage.bind(this.viewer));
 
 	// Numérotation des pages
-	this.pageSpan = $('<span class="btn">' + (lang['pdf-page-numbering'] || '%PN% / %PC%').replace('%PN%', '<input type="text" style="width: 33px; border: 0; text-align: center; " />').replace('%PC%', '<span></span>') + '</span>');
+	this.pageSpan = $(''
+			+ '<span class="input-group">'
+			+ '  <span class="input-group-prepend"><span class="input-group-text ' + this.textClass + '">'
+			+ '    ' + (lang['pdf-page-numbering-before'] || '')
+			+ '  </span></span>'
+			+ '  <input type="text" class="form-control pdf-page-number ' + this.textClass + '" />'
+			+ '  <span class="input-group-append"><span class="input-group-text ' + this.textClass + '">'
+			+ '    ' + (lang['pdf-page-numbering-middle'] || '') + '<span></span>' + (lang['pdf-page-numbering-after'] || '')
+			+ '  </span></span>'
+			+ '</span>');
 	// Numéro de page modifiable
 	this.pageNumberInput = this.pageSpan.children('input').change((function(event) {
 		var num = parseInt(event.target.value);
 		if (num != this.viewer.getPageIndex() && num >= 1 && num <= this.viewer.getPageCount())
 			this.viewer.renderPage(num);
 	}).bind(this));
-	this.pageCountSpan = this.pageSpan.children('span');
+	this.pageCountSpan = this.pageSpan.find('.input-group-text > span');
 
 	// Bouton "Zoom -"
-	this.zoomOutButton = this.buildButton('pdf-zoom-out', 'glyphicon-minus').click(this.viewer.zoomOut.bind(this.viewer));
+	this.zoomOutButton = this.buildButton('pdf-zoom-out', 'fa-minus').click(this.viewer.zoomOut.bind(this.viewer));
 	// Bouton "Zoom +"
-	this.zoomInButton = this.buildButton('pdf-zoom-in', 'glyphicon-plus').click(this.viewer.zoomIn.bind(this.viewer));
+	this.zoomInButton = this.buildButton('pdf-zoom-in', 'fa-plus').click(this.viewer.zoomIn.bind(this.viewer));
 	// Bouton dropdown Zoom autres
 	this.zoomMenu = this.buildButton('pdf-zoom-menu').addClass('dropdown-toggle').attr('data-toggle', 'dropdown').append('<span></span>&nbsp;%&nbsp;<span class="caret"></span>');
 	// Span où l'on affiche le zoom actuel
@@ -555,44 +575,50 @@ function PDFToolbar(viewer, container, lang, options) {
 	// Bouton "Pleine largeur"
 	this.zoomWidthButton = this.buildMenuLI('pdf-zoom-width').click(this.viewer.zoomWidth.bind(this.viewer));
 	// Boutons ".. %"
-	this.zoomPctButtons = [50, 75, 100, 125, 150, 200, 300, 400].map(function(pct) { return '<li><a href="#" class="pdf-zoom-pct" data-value="' + pct + '">' + pct + ' %</a></li>'; });
+	this.zoomPctButtons = [50, 75, 100, 125, 150, 200, 300, 400].map(function(pct) { return '<a href="#" class="dropdown-item pdf-zoom-pct" data-value="' + pct + '">' + pct + ' %</a>'; });
 	this.container.on('click', 'a.pdf-zoom-pct', (function(event) {
 		this.viewer.changeScale(parseInt($(event.target).attr('data-value')));
 	}).bind(this));
 
 	// Bouton "Rotation anti-horaire"
-	this.rotateCCWButton = this.buildButton('pdf-rotate-ccw', 'glyphicon-share-alt').click(this.viewer.rotateCounterClockWise.bind(this.viewer));
-	this.rotateCCWButton.children('.glyphicon').css('transform', 'scaleX(-1)');
+	this.rotateCCWButton = this.buildButton('pdf-rotate-ccw', 'fa-undo').click(this.viewer.rotateCounterClockWise.bind(this.viewer));
 	// Bouton "Rotation horaire"
-	this.rotateCWButton = this.buildButton('pdf-rotate-cw', 'glyphicon-share-alt').click(this.viewer.rotateClockWise.bind(this.viewer));
+	this.rotateCWButton = this.buildButton('pdf-rotate-cw', 'fa-undo').click(this.viewer.rotateClockWise.bind(this.viewer));
+	this.rotateCWButton.children('.fa-undo').css('transform', 'scaleX(-1)');
 
 	// Bouton "à propos"
-	this.aboutButton = this.buildButton('pdf-about', 'glyphicon-question-sign').click(this.viewer.showAbout.bind(this.viewer));
+	this.aboutButton = this.buildButton('pdf-about', 'fa-question-circle').click(this.viewer.showAbout.bind(this.viewer));
 
 	// Remplissage de la barre
 	if (options.showOpenFile)
-		this.container.append(this.openFileButton).append(this.openFileInput);
+		this.container.append(this.openFileButton).append(this.openFileInput).append(' ');
 	if (options.showOpenURL)
-		this.container.append(this.openURLButton);
-	this.container.append(this.pageFirstButton);
-	this.container.append(this.pagePreviousButton);
-	this.container.append(this.pageSpan);
-	this.container.append(this.pageNextButton);
-	this.container.append(this.pageLastButton);
-	this.container.append(this.zoomOutButton);
-	this.container.append($('<div class="btn-group" role="group" />')
-		.append(this.zoomMenu)
-		.append($('<ul class="dropdown-menu" />')
-			.append(this.zoomRealButton)
-			.append(this.zoomFitButton)
-			.append(this.zoomWidthButton)
-			.append('<li role="separator" class="divider"></li>')
-			.append(this.zoomPctButtons)
+		this.container.append(this.openURLButton).append(' ');
+	$('<div class="btn-group" />')
+		.append(this.pageFirstButton)
+		.append(this.pagePreviousButton)
+		.append(this.pageSpan)
+		.append(this.pageNextButton)
+		.append(this.pageLastButton)
+		.appendTo(this.container);
+	$('<div class="btn-group" />')
+		.append(this.zoomOutButton)
+		.append($('<div class="btn-group" />')
+			.append(this.zoomMenu)
+			.append($('<div class="dropdown-menu" />')
+				.append(this.zoomRealButton)
+				.append(this.zoomFitButton)
+				.append(this.zoomWidthButton)
+				.append('<div class="dropdown-divider"></div>')
+				.append(this.zoomPctButtons)
+			)
 		)
-	);
-	this.container.append(this.zoomInButton);
-	this.container.append(this.rotateCCWButton);
-	this.container.append(this.rotateCWButton);
+		.append(this.zoomInButton)
+		.appendTo(this.container);
+	$('<div class="btn-group" />')
+		.append(this.rotateCCWButton)
+		.append(this.rotateCWButton)
+		.appendTo(this.container);
 	if (options.showAbout)
 		this.container.append(this.aboutButton);
 
@@ -619,15 +645,16 @@ PDFToolbar.prototype.onviewerpagechanged = function(event, data) {
 	this.pageLastButton.prop('disabled', pageIndex == pageCount);
 };
 
-PDFToolbar.prototype.buildButton = function(name, glyphicon) {
+PDFToolbar.prototype.buildButton = function(name, icon) {
 	var text = this.lang[name] || '';
 	var key = this.lang[name + '-key'];
 	if (key)
 		text = this.lang['pdf-action-text-format'].replace('%T%', text).replace('%K%', key);
-	return $('<button type="button" class="btn btn-default" />')
+	return $('<button type="button" class="btn" />')
+		.addClass(this.buttonClass)
 		.addClass(name)
 		.attr('title', text)
-		.html(glyphicon ? '<span class="glyphicon ' + glyphicon + '"></span>' : '');
+		.html(icon ? '<i class="fa ' + icon + '"></i>' : '');
 };
 
 PDFToolbar.prototype.buildMenuLI = function(name) {
@@ -635,8 +662,8 @@ PDFToolbar.prototype.buildMenuLI = function(name) {
 	var key = this.lang[name + '-key'];
 	if (key)
 		text = this.lang['pdf-action-text-format'].replace('%T%', text).replace('%K%', key);
-	return $('<li />').append($('<a href="#" />')
+	return $('<a href="#" class="dropdown-item" />')
 		.addClass(name)
-		.html(text));
+		.html(text);
 };
 

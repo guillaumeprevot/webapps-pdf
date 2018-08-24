@@ -10,7 +10,9 @@ Les librairies suivantes ont été utilisées pour cette application :
 
 - [PDF.js 1.9.426](http://mozilla.github.io/pdf.js/) sous licence Apache 2
 - [jQuery 3.3.1](http://jquery.com/) sous licence MIT
-- [Bootstrap 3.3.7](http://getbootstrap.com/css/) sous licence MIT
+- [Bootstrap 4.1.3](https://getbootstrap.com/) sous licence MIT
+- [Popper.js 1.14.4](https://popper.js.org/) sous licence MIT
+- [Font Awesome 5.2.0](https://fontawesome.com/) SIL OFL 1.1 (police) et MIT (code)
 
 L'application devrait fonctionner correctement est mode déconnecté grâce aux **Service Workers** sous Chrome, Firefox et [d'autres bientôt](https://caniuse.com/#search=service+worker).
 Plus d'infos chez [Google](https://developers.google.com/web/fundamentals/primers/service-workers/) ou [Mozilla](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers).
@@ -50,3 +52,4 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 - 2018-04-20 : correction de la hauteur du bouton "Retour" quand l'option "fromURL" est utilisée
 - 2018-04-21 : réorganisation de la section "Changelog"
 - 2018-04-21 : réorganisation des traces "console" du service worker
+- 2018-08-24 : passage sur "Bootstrap 4" (+ Popper + FontAwesome) + refactoring pour gérer un mode "dark" (par défaut) ou "light" (?dark=false)

@@ -3,17 +3,17 @@
  * - GOOGLE : https://developers.google.com/web/fundamentals/primers/service-workers/#update-a-service-worker
  * - MOZILLA : https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
  */
-var cacheName = 'v1';
+var cacheName = 'v2';
 var baseCacheContent = [
 	'./libs/bootstrap/css/bootstrap.min.css',
-	// Pour l'exemple, on ajoute uniquement "woff2" et les autres dynamiquement dans "fetch"
-	//'./libs/bootstrap/fonts/glyphicons-halflings-regular.ttf',
-	//'./libs/bootstrap/fonts/glyphicons-halflings-regular.woff',
-	'./libs/bootstrap/fonts/glyphicons-halflings-regular.woff2',
 	'./libs/bootstrap/js/bootstrap.min.js',
+	'./libs/fontawesome/css/fontawesome.min.css',
+	'./libs/fontawesome/css/solid.min.css',
+	'./libs/fontawesome/webfonts/fa-solid-900.woff2', // les autres dans "fetch"
 	'./libs/jquery/jquery.min.js',
 	'./libs/pdfjs/pdf.js',
 	'./libs/pdfjs/pdf.worker.js',
+	'./libs/popper/popper.min.js',
 	'jquery-pdf.css',
 	'jquery-pdf.js',
 	'webapps-pdf.html',

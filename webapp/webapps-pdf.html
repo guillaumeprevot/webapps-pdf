@@ -7,36 +7,45 @@
 		<meta name="robots" content="noindex, nofollow" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" type="text/css" href="./libs/bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="./libs/fontawesome/css/fontawesome.min.css" />
+		<link rel="stylesheet" type="text/css" href="./libs/fontawesome/css/solid.min.css" />
 		<link rel="stylesheet" type="text/css" href="./jquery-pdf.css" />
 		<link href="./webapps-pdf.ico" rel="shortcut icon" type="image/x-icon" />
 		<style>
-#pdf-test { width: 100%; height: 100%; }
-#pdf-test > body { padding-top: 54px; background-color: #404040; }
-#pdf-toolbar { display: none; position: fixed; z-index: 1; left: 0; top: 0; right: 0; padding: 10px 10px 5px; background-color: #333; color: white; height: auto; }
+html { width: 100%; height: 100%; }
+body { width: 100%; height: 100%; display: flex; flex-direction: column; }
+#pdf-toolbar { display: none; flex: none; padding: 7px; background-color: #222; color: white; }
 #pdf-back { display: none; }
+#pdf-content { flex: auto; }
 #pdf-container { display: none; position: fixed; z-index: 0; left: 0; top: 54px; right: 0; bottom: 26px; }
-#pdf-start, #pdf-wait { display: none; font-size: 14pt; text-align: center; position: fixed; left: 50%; top: 40%; width: 20em; margin-left: -10em; padding: 2.5em; border: 1px solid #337AB7; color: #337AB7; }
-#pdf-copyright { position: fixed; z-index: 1; left: 0; bottom: 0; right: 0; padding: 5px 10px; background-color: #404040; color: white; text-align: right; font-size: smaller; }
+#pdf-start, #pdf-wait { display: none; font-size: 14pt; text-align: center; position: absolute; left: 50%; top: 40%; width: 20em; margin-left: -10em; padding: 2.5em; }
+#pdf-copyright { flex: none; padding: 5px 10px; color: white; text-align: right; font-size: smaller; }
 		</style>
 	</head>
-	<body>
+	<body class="bg-dark">
 
 <div id="pdf-toolbar">
-	<a id="pdf-back" href="#" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span></a>
+	<a id="pdf-back" href="#" class="btn btn-dark"><i class="fa fa-arrow-left"></i></a>
 </div>
-<div id="pdf-container"></div>
-<a  href="#" id="pdf-start">Ouvrir un fichier PDF en cliquant ou en le déposant ici</a>
-<div id="pdf-wait">Chargement en cours ...</div>
+
+<div id="pdf-content">
+	<div id="pdf-container"></div>
+	<a  href="#" id="pdf-start" class="border border-primary text-primary">Ouvrir un fichier PDF en cliquant ou en le déposant ici</a>
+	<div id="pdf-wait" class="border border-primary text-primary">Chargement en cours ...</div>
+</div>
 
 <div id="pdf-copyright">
 	Développé par <a target="_blank" href="https://github.com/guillaumeprevot">Tech GP</a>
 	grâce à <a target="_blank" href="http://mozilla.github.io/pdf.js/">PDF.js</a>,
 	<a target="_blank" href="http://jquery.com/">jQuery</a> et
-	<a target="_blank" href="http://getbootstrap.com/css/">Bootstrap</a>,
+	<a target="_blank" href="https://getbootstrap.com/">Bootstrap</a>,
+	<a target="_blank" href="https://popper.js.org/">Popper.js</a> et
+	<a target="_blank" href="https://fontawesome.com/">Font Awesome</a>,
 	favicon par <a target="_blank" href="http://dryicons.com">DryIcons</a>.
 </div>
 
 		<script type="text/javascript" src="./libs/jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="./libs/popper/popper.min.js"></script>
 		<script type="text/javascript" src="./libs/bootstrap/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="./libs/pdfjs/pdf.js"></script>
 		<script type="text/javascript" src="./jquery-pdf.js"></script>
@@ -58,6 +67,7 @@ if ('serviceWorker' in navigator && navigator.onLine) {
 $(function() {
 	// Options d'affichage
 	var options = {
+		dark: true,
 		showOpenFile: true,
 		showOpenURL: true,
 		showAbout: true,
@@ -77,6 +87,11 @@ $(function() {
 			else
 				options[tokens[0]] = decodeURIComponent(tokens[1]);
 		});
+	}
+
+	if (!options.dark) {
+		$('body').removeClass('bg-dark').addClass('bg-light');
+		$('.btn-dark').removeClass('btn-dark').addClass('btn-light text-dark');
 	}
 
 	var lang = PDFLang[navigator.language] || PDFLang['en'];
