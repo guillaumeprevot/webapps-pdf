@@ -1,6 +1,6 @@
 # webapps-pdf
 
-A simple PDF viewer using [PDF.js](http://mozilla.github.io/pdf.js/) from [Mozilla](https://www.mozilla.org/fr/)
+A simple PDF viewer using [PDF.js](https://mozilla.github.io/pdf.js/) from [Mozilla](https://www.mozilla.org/fr/)
 
 ## Présentation
 
@@ -8,11 +8,12 @@ A simple PDF viewer using [PDF.js](http://mozilla.github.io/pdf.js/) from [Mozil
 
 Les librairies suivantes ont été utilisées pour cette application :
 
-- [PDF.js 1.10.100](http://mozilla.github.io/pdf.js/) sous licence Apache 2
-- [jQuery 3.3.1](http://jquery.com/) sous licence MIT
+- [PDF.js 1.10.100](https://mozilla.github.io/pdf.js/) sous licence Apache 2
+- [jQuery 3.3.1](https://jquery.com/) sous licence MIT
 - [Bootstrap 4.1.3](https://getbootstrap.com/) sous licence MIT
 - [Popper.js 1.14.4](https://popper.js.org/) sous licence MIT
 - [Font Awesome 5.2.0](https://fontawesome.com/) SIL OFL 1.1 (police) et MIT (code)
+- [DryIcons](https://dryicons.com/) pour le favicon
 
 L'application devrait fonctionner correctement est mode déconnecté grâce aux **Service Workers** sous Chrome, Firefox et [d'autres bientôt](https://caniuse.com/#search=service+worker).
 Plus d'infos chez [Google](https://developers.google.com/web/fundamentals/primers/service-workers/) ou [Mozilla](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers).
@@ -57,3 +58,4 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 - 2018-08-24 : passage sur "Bootstrap 4" (+ Popper + FontAwesome) + refactoring pour gérer un mode "dark" (par défaut) ou "light" (?dark=false)
 - 2018-08-24 : mise à jour de PDF.js (1.9.426 en 1.10.100)
 - 2018-08-24 : correction du bandeau inférieur en mode clair + mise à jour des captures d'écran
+- 2018-08-26 : passage des liens externes en HTTPS
