@@ -47,7 +47,7 @@ body { width: 100%; height: 100%; display: flex; flex-direction: column; }
 		<script type="text/javascript" src="./libs/jquery/jquery.min.js"></script>
 		<script type="text/javascript" src="./libs/popper/popper.min.js"></script>
 		<script type="text/javascript" src="./libs/bootstrap/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="./libs/pdfjs/pdf.js"></script>
+		<script type="text/javascript" src="./libs/pdfjs/pdf.min.js"></script>
 		<script type="text/javascript" src="./jquery-pdf.js"></script>
 		<script type="text/javascript">
 
@@ -95,8 +95,13 @@ $(function() {
 		$('#pdf-copyright').removeClass('text-light').addClass('text-dark');
 	}
 
+	// Chargement de l'API 2.x, qui a supprimé la variable globale PDFJS de l'API 1.x
+	// Détail de l'API : https://github.com/mozilla/pdf.js/blob/master/src/display/api.js
+	var PDFJS = window['pdfjs-dist/build/pdf'];
+	// PDFJS.GlobalWorkerOptions.workerSrc = './libs/pdfjs/pdf.worker.js';
+
 	var lang = PDFLang[navigator.language] || PDFLang['en'];
-	var viewer = new PDFViewer($('#pdf-container'), lang, true);
+	var viewer = new PDFViewer(PDFJS, $('#pdf-container'), lang, true);
 	var toolbar = new PDFToolbar(viewer, $('#pdf-toolbar'), lang, options);
 
 	viewer.on('load', function(event, data) {

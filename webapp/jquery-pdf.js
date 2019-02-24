@@ -98,8 +98,9 @@ PDFLang['en'] = {
 	},
 };
 
-function PDFViewer(container, lang, textLayer) {
+function PDFViewer(PDFJS, container, lang, textLayer) {
 	// load, loaded, scalechanged, pagechanged
+	this.PDFJS = PDFJS;
 	this.container = container.addClass('pdf-container');
 	this.lang = lang;
 	this.pdf = null;
@@ -113,7 +114,7 @@ function PDFViewer(container, lang, textLayer) {
 	this.canvasContext = this.canvas.getContext('2d');
 
 	// Contrôles au clavier
-	$(document.body).on('keypress', this.onkeypress.bind(this));
+	$(document.body).on('keydown', this.onkeydown.bind(this));
 	// Drop de fichiers
 	this.container.on('dragenter dragover', function(event) {
 		event.preventDefault();
@@ -188,7 +189,7 @@ PDFViewer.prototype.loadURL = function(url) {
 	viewer.trigger('load', {
 		url: url
 	});
-	PDFJS.getDocument(url).then(function(pdfDoc) {
+	this.PDFJS.getDocument(url).promise.then(function(pdfDoc) {
 		viewer.pdf = pdfDoc;
 		viewer.trigger('loaded', {
 			pageCount: viewer.pdf.numPages
@@ -261,9 +262,10 @@ PDFViewer.prototype.renderPage = function(pageIndex) {
 		// OK, dessiner la page demandée
 		viewer.pageRendering = true;
 		viewer.pdf.getPage(pageIndex).then(function(page) {
-			// console.log(page); // page = { pageIndex: 0, pageInfo: { rotate: 0, view:[t,l,w,h]} }
+			// console.log(page); // page = { pageIndex: 0, rotate:getter, ..., _pageInfo: { rotate: 0, view:[t,l,w,h]} }
 
-			var viewport = page.getViewport(viewer.scale / 100.0, viewer.rotation + page.pageInfo.rotate);
+			// En 2.0, il faut toujours passer (scale, rotate) alors que la doc 2.x indique qu'il faut passer ({scale, rotate}). A revoir en 2.1...
+			var viewport = page.getViewport(viewer.scale / 100.0, viewer.rotation + page.rotate);
 			viewer.trigger('scalechanged', {
 				scale: viewer.scale
 			});
@@ -310,7 +312,7 @@ PDFViewer.prototype.renderPage = function(pageIndex) {
 /** Ajouter au DOM un élément de texte de la page en cours */
 PDFViewer.prototype.appendText = function(viewport, item, styles) {
 	var style = styles[item.fontName];
-	var tx = PDFJS.Util.transform(viewport.transform, item.transform);
+	var tx = this.PDFJS.Util.transform(viewport.transform, item.transform);
 	//var pos = viewport.convertToViewportPoint(item.transform[4], item.transform[5]);
 	var fontHeight = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3]));
 	var fontAscent = fontHeight * (style.ascent ? style.ascent : (style.descent ? (1 + style.descent) : 1));
@@ -398,7 +400,7 @@ PDFViewer.prototype.changeRotation = function(offset) {
 };
 
 /** Cette fonction permet de contrôler le PDFViewer au clavier */
-PDFViewer.prototype.onkeypress = function(event) {
+PDFViewer.prototype.onkeydown = function(event) {
 	if (event.target.tagName === 'INPUT' || event.ctrlKey)
 		return;
 	var key = event.key, prevent = true;
