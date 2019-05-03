@@ -9,7 +9,7 @@ A simple PDF viewer using [PDF.js](https://mozilla.github.io/pdf.js/) from [Mozi
 Les librairies suivantes ont été utilisées pour cette application :
 
 - [PDF.js dist 2.0.943](https://github.com/mozilla/pdfjs-dist/releases), build de [PDF.js](https://mozilla.github.io/pdf.js/) sous licence Apache 2
-- [jQuery 3.3.1](https://jquery.com/) sous licence MIT
+- [jQuery 3.4.1](https://jquery.com/) sous licence MIT
 - [Bootstrap 4.3.1](https://getbootstrap.com/) sous licence MIT
 - [Popper.js 1.14.7](https://popper.js.org/) sous licence MIT
 - [Font Awesome 5.7.2](https://fontawesome.com/) SIL OFL 1.1 (police) et MIT (code)
@@ -60,3 +60,4 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 - 2018-08-24 : correction du bandeau inférieur en mode clair + mise à jour des captures d'écran
 - 2018-08-26 : passage des liens externes en HTTPS
 - 2019-02-24 : migration vers PDF.js 2.0.943 + correction du contrôle au clavier + mise à jour de Bootstrap 4.3.1, Popper 1.14.7 et FontAwesome 5.7.2
+- 2019-05-03 : mise à jour de jQuery (3.3.1 vers 3.4.1) + ajustement du contenu du cache dans le service worker

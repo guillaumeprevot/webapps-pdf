@@ -3,7 +3,7 @@
  * - GOOGLE : https://developers.google.com/web/fundamentals/primers/service-workers/#update-a-service-worker
  * - MOZILLA : https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
  */
-var cacheName = 'v2';
+var cacheName = 'v3';
 var baseCacheContent = [
 	'./libs/bootstrap/css/bootstrap.min.css',
 	'./libs/bootstrap/js/bootstrap.min.js',
@@ -11,8 +11,8 @@ var baseCacheContent = [
 	'./libs/fontawesome/css/solid.min.css',
 	'./libs/fontawesome/webfonts/fa-solid-900.woff2', // les autres dans "fetch"
 	'./libs/jquery/jquery.min.js',
-	'./libs/pdfjs/pdf.js',
-	'./libs/pdfjs/pdf.worker.js',
+	'./libs/pdfjs/pdf.min.js',
+	'./libs/pdfjs/pdf.worker.min.js',
 	'./libs/popper/popper.min.js',
 	'jquery-pdf.css',
 	'jquery-pdf.js',
