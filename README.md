@@ -61,3 +61,6 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 - 2018-08-26 : passage des liens externes en HTTPS
 - 2019-02-24 : migration vers PDF.js 2.0.943 + correction du contrôle au clavier + mise à jour de Bootstrap 4.3.1, Popper 1.14.7 et FontAwesome 5.7.2
 - 2019-05-03 : mise à jour de jQuery (3.3.1 vers 3.4.1) + ajustement du contenu du cache dans le service worker
+- 2019-05-03 : légères retouches pour afficher en 100% par défaut et pour ne pas générer le texte pour les pages pivotées
+- 2019-05-03 : correction de la taille de l'image en ajustant le ratio des pixels CSS (96 / 72)
+- 2019-05-03 : amélioration de la qualité du rendu PDF (plus de pixels dans le canvas)

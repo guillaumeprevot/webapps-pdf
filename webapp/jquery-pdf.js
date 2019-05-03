@@ -107,11 +107,14 @@ function PDFViewer(PDFJS, container, lang, textLayer) {
 	this.pageIndex = 1;
 	this.pageRendering = false;
 	this.pageIndexPending = null;
-	this.scale = 80;
+	this.scale = PDFViewer.initialScale;
 	this.rotation = 0;
 	this.textLayer = textLayer ? $('<div />').appendTo(this.container)[0] : undefined;
 	this.canvas = $('<canvas />').appendTo(this.container)[0];
-	this.canvasContext = this.canvas.getContext('2d');
+	this.canvas.mozOpaque = true;
+	this.canvasContext = this.canvas.getContext('2d', {
+		alpha: false
+	});
 
 	// Contrôles au clavier
 	$(document.body).on('keydown', this.onkeydown.bind(this));
@@ -124,6 +127,13 @@ function PDFViewer(PDFJS, container, lang, textLayer) {
 	}).bind(this));
 
 }
+
+/** Par défaut, le PDF est flou. La variable "canvasQuality" permet de multiplier la densité de pixels */
+PDFViewer.canvasQuality = 2;
+/** Ratio de conversion de pt vers dots (96 dot per inch / 72pt per inch) */
+PDFViewer.cssUnits = 96 / 72;
+/** Echelle par défaut = 100% */
+PDFViewer.initialScale = 100;
 
 /** Cette méthode lance l'évènement demandé, prévenant ainsi d'éventuels listeners */
 PDFViewer.prototype.trigger = function(event, extraParameters) {
@@ -265,15 +275,17 @@ PDFViewer.prototype.renderPage = function(pageIndex) {
 			// console.log(page); // page = { pageIndex: 0, rotate:getter, ..., _pageInfo: { rotate: 0, view:[t,l,w,h]} }
 
 			// En 2.0, il faut toujours passer (scale, rotate) alors que la doc 2.x indique qu'il faut passer ({scale, rotate}). A revoir en 2.1...
-			var viewport = page.getViewport(viewer.scale / 100.0, viewer.rotation + page.rotate);
+			var viewport = page.getViewport(PDFViewer.canvasQuality * PDFViewer.cssUnits * viewer.scale / 100.0, viewer.rotation + page.rotate);
 			viewer.trigger('scalechanged', {
 				scale: viewer.scale
 			});
-			viewer.canvas.height = viewport.height;
-			viewer.canvas.width = viewport.width;
+			viewer.canvas.height = Math.round(viewport.height);
+			viewer.canvas.width = Math.round(viewport.width);
+			viewer.canvas.style.width = Math.round(viewport.width / PDFViewer.canvasQuality) + 'px';
+			viewer.canvas.style.height = Math.round(viewport.height / PDFViewer.canvasQuality) + 'px';
 			if (!!viewer.textLayer) {
 				viewer.textLayer.textContent = '';
-				viewer.textLayer.style.width = viewport.width + 'px';
+				viewer.textLayer.style.width = (viewport.width / PDFViewer.canvasQuality) + 'px';
 			}
 
 			viewer.pageIndex = pageIndex;
@@ -296,7 +308,7 @@ PDFViewer.prototype.renderPage = function(pageIndex) {
 				}
 			});
 
-			if (!!viewer.textLayer) {
+			if (!!viewer.textLayer && (viewer.rotation + page.rotate) % 360 === 0) {
 				page.getTextContent(/*{ normalizeWhitespace: true }*/).then(function(textContent) {
 					// console.log($.map(textContent.items, (i) => i.str).join(' '));
 					var textItems = textContent.items;
@@ -331,9 +343,9 @@ PDFViewer.prototype.appendText = function(viewport, item, styles) {
 	*/
 
 	var textDiv = document.createElement('div');
-	textDiv.style.left = left + 'px';
-	textDiv.style.top = top + 'px';
-	textDiv.style.fontSize = fontHeight + 'px';
+	textDiv.style.left = (left / PDFViewer.canvasQuality) + 'px';
+	textDiv.style.top = (top / PDFViewer.canvasQuality) + 'px';
+	textDiv.style.fontSize = (fontHeight / PDFViewer.canvasQuality) + 'px';
 	textDiv.style.fontFamily = item.fontName;
 	if (item.dir === 'rtl')
 		textDiv.style.direction = 'rtl';
@@ -366,7 +378,7 @@ PDFViewer.prototype.zoomFit = function() {
 		width = this.container.width() - 17/*if scrollbar are visible*/,
 		heightFactor = height / this.canvas.height,
 		widthFactor = width / this.canvas.width;
-	this.changeScale(this.scale * Math.min(widthFactor, heightFactor));
+	this.changeScale(PDFViewer.canvasQuality * this.scale * Math.min(widthFactor, heightFactor));
 };
 
 /** Ajuster le zoom pour que la page s'affiche en pleine largeur */
@@ -374,7 +386,7 @@ PDFViewer.prototype.zoomWidth = function(newWidth) {
 	var newWidth = this.container.width() - 17/*if scrollbar are visible*/,
 		currentWidth = this.canvas.width,
 		currentScale = this.scale;
-	this.changeScale(currentScale * newWidth / currentWidth);
+	this.changeScale(PDFViewer.canvasQuality * currentScale * newWidth / currentWidth);
 };
 
 /** Changer le zoom et redessiner la page */
