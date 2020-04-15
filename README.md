@@ -4,18 +4,18 @@ A simple PDF viewer using [PDF.js](https://mozilla.github.io/pdf.js/) from [Mozi
 
 ## Présentation
 
-[Cette application](https://techgp.fr/webapps/webapps-pdf.html) écrite en HTML5, JavaScript et CSS3 vous permet de visualiser des fichiers PDF directement dans votre navigateur.
+Cette application écrite en HTML5, JavaScript et CSS3 vous permet de visualiser des fichiers PDF directement dans votre navigateur.
 
 Les librairies suivantes ont été utilisées pour cette application :
 
-- [PDF.js dist 2.0.943](https://github.com/mozilla/pdfjs-dist/releases), build de [PDF.js](https://mozilla.github.io/pdf.js/) sous licence Apache 2
-- [jQuery 3.4.1](https://jquery.com/) sous licence MIT
-- [Bootstrap 4.3.1](https://getbootstrap.com/) sous licence MIT
-- [Popper.js 1.14.7](https://popper.js.org/) sous licence MIT
-- [Font Awesome 5.7.2](https://fontawesome.com/) SIL OFL 1.1 (police) et MIT (code)
+- [PDF.js dist 2.3.200](https://github.com/mozilla/pdfjs-dist/releases), build de [PDF.js](https://mozilla.github.io/pdf.js/) sous licence Apache 2
+- [jQuery 3.5.0](https://jquery.com/) sous licence MIT
+- [Bootstrap 4.4.1](https://getbootstrap.com/) sous licence MIT
+- [Popper.js 1.16.1](https://popper.js.org/) sous licence MIT
+- [Font Awesome 5.13.0](https://fontawesome.com/) SIL OFL 1.1 (police) et MIT (code)
 - [DryIcons](https://dryicons.com/) pour le favicon
 
-L'application devrait fonctionner correctement est mode déconnecté grâce aux **Service Workers** sous Chrome, Firefox et [d'autres bientôt](https://caniuse.com/#search=service+worker).
+L'application devrait fonctionner correctement est mode déconnecté grâce aux **Service Workers** sous Chrome, Firefox et [d'autres](https://caniuse.com/#search=service+worker).
 Plus d'infos chez [Google](https://developers.google.com/web/fundamentals/primers/service-workers/) ou [Mozilla](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers).
 
 ## Captures d'écran
@@ -64,3 +64,6 @@ Ce projet est distribué sous licence MIT, reproduite dans le fichier LICENSE ic
 - 2019-05-03 : légères retouches pour afficher en 100% par défaut et pour ne pas générer le texte pour les pages pivotées
 - 2019-05-03 : correction de la taille de l'image en ajustant le ratio des pixels CSS (96 / 72)
 - 2019-05-03 : amélioration de la qualité du rendu PDF (plus de pixels dans le canvas)
+- 2020-04-15 : mise à jour de jQuery (3.5.0), PDF.js (2.3.200), Bootstrap (4.4.1), Popper (1.16.1) et Font Awesome (5.13.0)
+- 2020-04-15 : ajout du mode "Pleine hauteur" pour ajuster à la hauteur (équivalent du mode "Plein largeur" existant) 
+- 2020-04-15 : stockage du mode en cours (Page entière, Pleine largeur, Plein hauteur ou autres) pour ajuster le zoom si besoin (rotation, redimensionnement, ...)

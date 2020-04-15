@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
 	<head>
-		<title>PDF.js 1.3.91</title>
+		<title>PDF.js</title>
 		<meta charset="UTF-8">
-		<script type="application/javascript" src="../webapp/libs/pdfjs/pdf.js"></script>
+		<script type="application/javascript" src="../webapp/libs/pdfjs/pdf.min.js"></script>
 		<script>
 
 /** Cette fonction a pour but de proposer un code simple de création de miniature d'un document PDF */
 function previewPDF(url, canvas, maxWidth, maxHeight, pageNumber) {
-	PDFJS.disableWorker = true;
-	PDFJS.getDocument(url).then(function(pdf) {
+	var PDFJS = window['pdfjs-dist/build/pdf'];
+	// PDFJS.GlobalWorkerOptions.workerSrc = '../webapp/libs/pdfjs/pdf.worker.min.js';
+	PDFJS.getDocument(url).promise.then(function(pdf) {
 		pdf.getPage(pageNumber || 1).then(function(page) {
-			// Calculate canvas dimensions
-			var view = page.view; // [0,0,612,792]
-			var width = view[2];
-			var height = view[3];
+			// Get natural dimensions
+			var viewport = page.getViewport({ scale: 1, rotation: page.rotate });
+
+			// Calculate preview dimensions
+			var width = viewport.width;
+			var height = viewport.height;
 			if (maxWidth && width > maxWidth) {
 				height = height * maxWidth / width;
 				width = maxWidth;
@@ -23,17 +26,17 @@ function previewPDF(url, canvas, maxWidth, maxHeight, pageNumber) {
 				width = width * maxHeight / height;
 				height = maxHeight;
 			}
-			canvas.width = width;
-			canvas.height = height;
-			if (maxHeight)
-				canvas.style.marginTop = ((maxHeight - canvas.height) / 2) + 'px';
-			if (maxWidth)
-				canvas.style.marginLeft = ((maxWidth - canvas.width) / 2) + 'px';
 
-			// Draw page
-			var rotation = 0;
-			var scale = canvas.width / view[2];
-			var viewport = page.getViewport(scale, rotation);
+			// Set canvas dimensions
+			canvas.width = Math.round(width);
+			canvas.height = Math.round(height);
+			if (maxHeight)
+				canvas.style.marginTop = canvas.style.marginBottom = ((maxHeight - canvas.height) / 2) + 'px';
+			if (maxWidth)
+				canvas.style.marginLeft = canvas.style.marginRight = ((maxWidth - canvas.width) / 2) + 'px';
+
+			// Draw page at final scale
+			viewport = page.getViewport({ scale: width / viewport.width, rotation: page.rotate });
 			var renderContext = {
 				canvasContext: canvas.getContext('2d'),
 				viewport: viewport

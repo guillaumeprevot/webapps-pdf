@@ -22,8 +22,9 @@ PDFLang['fr'] = {
 	'pdf-zoom-menu': 'Zoom autres',
 	'pdf-zoom-real': 'Taille réelle',
 	'pdf-zoom-fit': 'Page entière',
-	'pdf-zoom-fit-key': '0 (zéro)',
+	'pdf-zoom-fit-key': '0',
 	'pdf-zoom-width': 'Pleine largeur',
+	'pdf-zoom-height': 'Pleine hauteur',
 	'pdf-rotate-ccw': 'Rotation anti-horaire',
 	'pdf-rotate-ccw-key': 'Alt ←',
 	'pdf-rotate-cw': 'Rotation horaire',
@@ -73,6 +74,7 @@ PDFLang['en'] = {
 	'pdf-zoom-fit': 'Fit to page',
 	'pdf-zoom-fit-key': '0 (zero)',
 	'pdf-zoom-width': 'Fit to width',
+	'pdf-zoom-height': 'Fit to height',
 	'pdf-rotate-ccw': 'Counter-clockwise rotation',
 	'pdf-rotate-ccw-key': 'Alt ←',
 	'pdf-rotate-cw': 'Clockwise rotation',
@@ -108,6 +110,7 @@ function PDFViewer(PDFJS, container, lang, textLayer) {
 	this.pageRendering = false;
 	this.pageIndexPending = null;
 	this.scale = PDFViewer.initialScale;
+	this.scaleMode = 'percent'; // or 'fit' or 'width' or 'height'
 	this.rotation = 0;
 	this.textLayer = textLayer ? $('<div />').appendTo(this.container)[0] : undefined;
 	this.canvas = $('<canvas />').appendTo(this.container)[0];
@@ -126,8 +129,19 @@ function PDFViewer(PDFJS, container, lang, textLayer) {
 		this.loadFile(event.originalEvent.dataTransfer.files[0]);
 	}).bind(this));
 
+	// Redimensionnement quand la taille change
+	$(window).on('resize', () => {
+		if (this.scaleMode === 'fit')
+			this.zoomFit();
+		else if (this.scaleMode === 'width')
+			this.zoomWidth();
+		else if (this.scaleMode === 'height')
+			this.zoomHeight();
+	});
 }
 
+/** Espace réservé pour les cas où des scrollbars apparaissent */
+PDFViewer.scrollbarSize = 17;
 /** Par défaut, le PDF est flou. La variable "canvasQuality" permet de multiplier la densité de pixels */
 PDFViewer.canvasQuality = 2;
 /** Ratio de conversion de pt vers dots (96 dot per inch / 72pt per inch) */
@@ -274,10 +288,13 @@ PDFViewer.prototype.renderPage = function(pageIndex) {
 		viewer.pdf.getPage(pageIndex).then(function(page) {
 			// console.log(page); // page = { pageIndex: 0, rotate:getter, ..., _pageInfo: { rotate: 0, view:[t,l,w,h]} }
 
-			// En 2.0, il faut toujours passer (scale, rotate) alors que la doc 2.x indique qu'il faut passer ({scale, rotate}). A revoir en 2.1...
-			var viewport = page.getViewport(PDFViewer.canvasQuality * PDFViewer.cssUnits * viewer.scale / 100.0, viewer.rotation + page.rotate);
+			var viewport = page.getViewport({
+				scale: PDFViewer.canvasQuality * PDFViewer.cssUnits * viewer.scale / 100.0,
+				rotation: viewer.rotation + page.rotate
+			});
 			viewer.trigger('scalechanged', {
-				scale: viewer.scale
+				scale: viewer.scale,
+				scaleMode: viewer.scaleMode
 			});
 			viewer.canvas.height = Math.round(viewport.height);
 			viewer.canvas.width = Math.round(viewport.width);
@@ -285,7 +302,7 @@ PDFViewer.prototype.renderPage = function(pageIndex) {
 			viewer.canvas.style.height = Math.round(viewport.height / PDFViewer.canvasQuality) + 'px';
 			if (!!viewer.textLayer) {
 				viewer.textLayer.textContent = '';
-				viewer.textLayer.style.width = (viewport.width / PDFViewer.canvasQuality) + 'px';
+				viewer.textLayer.style.width = Math.round(viewport.width / PDFViewer.canvasQuality) + 'px';
 			}
 
 			viewer.pageIndex = pageIndex;
@@ -358,40 +375,47 @@ PDFViewer.prototype.appendText = function(viewport, item, styles) {
 /** Zoomer un peu plus (+10 entre 0 et 100, +20 entre 100 et 200, +30 entre 200 et 300, ...) */
 PDFViewer.prototype.zoomIn = function() {
 	var increment = (Math.floor(this.scale / 100) + 1) * 10;
-	this.changeScale(this.scale + increment);
+	this.changeScale(this.scale + increment, 'percent');
 };
 
 /** Zoomer un peu plus (-10 entre 0 et 100, -20 entre 100 et 200, -30 entre 200 et 300, ...) */
 PDFViewer.prototype.zoomOut = function() {
 	var decrement = (Math.floor(this.scale / 100) + 1) * 10;
-	this.changeScale(Math.max(10, this.scale - decrement));
+	this.changeScale(Math.max(10, this.scale - decrement), 'percent');
 };
 
 /** Positionner le zoom à 100% (taille réelle) */
 PDFViewer.prototype.zoomReal = function() {
-	this.changeScale(100);
+	this.changeScale(100, 'percent');
 };
 
 /** Ajuster le zoom pour que la page s'affiche en entière */
 PDFViewer.prototype.zoomFit = function() {
 	var height = this.container.height(),
-		width = this.container.width() - 17/*if scrollbar are visible*/,
+		width = this.container.width(),
 		heightFactor = height / this.canvas.height,
 		widthFactor = width / this.canvas.width;
-	this.changeScale(PDFViewer.canvasQuality * this.scale * Math.min(widthFactor, heightFactor));
+	this.changeScale(PDFViewer.canvasQuality * this.scale * Math.min(widthFactor, heightFactor), 'fit');
 };
 
-/** Ajuster le zoom pour que la page s'affiche en pleine largeur */
-PDFViewer.prototype.zoomWidth = function(newWidth) {
-	var newWidth = this.container.width() - 17/*if scrollbar are visible*/,
-		currentWidth = this.canvas.width,
-		currentScale = this.scale;
-	this.changeScale(PDFViewer.canvasQuality * currentScale * newWidth / currentWidth);
+/** Ajuster le zoom pour que la page s'ajuste en largeur */
+PDFViewer.prototype.zoomWidth = function() {
+	var width = this.container.width(),
+		widthFactor = (width - PDFViewer.scrollbarSize) / this.canvas.width;
+	this.changeScale(PDFViewer.canvasQuality * this.scale * widthFactor, 'width');
+};
+
+/** Ajuster le zoom pour que la page s'ajuste en hauteur */
+PDFViewer.prototype.zoomHeight = function() {
+	var height = this.container.height(),
+		heightFactor = (height - PDFViewer.scrollbarSize) / this.canvas.height;
+	this.changeScale(PDFViewer.canvasQuality * this.scale * heightFactor, 'height');
 };
 
 /** Changer le zoom et redessiner la page */
-PDFViewer.prototype.changeScale = function(value) {
+PDFViewer.prototype.changeScale = function(value, mode) {
 	this.scale = value;
+	this.scaleMode = mode;
 	this.renderPage(this.pageIndex);
 };
 
@@ -407,6 +431,18 @@ PDFViewer.prototype.rotateCounterClockWise = function() {
 
 /** Changer la rotation et redessiner la page */
 PDFViewer.prototype.changeRotation = function(offset) {
+	// Recalculate scale if the current mode requires it ('fit', 'width' or 'height' modes)
+	var factor;
+	if (this.scaleMode === 'fit')
+		factor = Math.min(this.container.width() / this.canvas.height, this.container.height() / this.canvas.width);
+	else if (this.scaleMode === 'width')
+		factor = (this.container.width() - PDFViewer.scrollbarSize) / this.canvas.height;
+	else if (this.scaleMode === 'height')
+		factor = (this.container.height() - PDFViewer.scrollbarSize) / this.canvas.width;
+	else
+		factor = null;
+	if (factor !== null)
+		this.scale = PDFViewer.canvasQuality * this.scale * factor;
 	this.rotation = (this.rotation + 360 + offset) % 360;
 	this.renderPage(this.pageIndex);
 };
@@ -561,7 +597,7 @@ function PDFToolbar(viewer, container, lang, options) {
 			+ '  <span class="input-group-prepend"><span class="input-group-text ' + this.textClass + '">'
 			+ '    ' + (lang['pdf-page-numbering-before'] || '')
 			+ '  </span></span>'
-			+ '  <input type="text" class="form-control pdf-page-number ' + this.textClass + '" />'
+			+ '  <input type="text" class="form-control pdf-page-number ' + this.textClass + '"></input>'
 			+ '  <span class="input-group-append"><span class="input-group-text ' + this.textClass + '">'
 			+ '    ' + (lang['pdf-page-numbering-middle'] || '') + '<span></span>' + (lang['pdf-page-numbering-after'] || '')
 			+ '  </span></span>'
@@ -583,16 +619,18 @@ function PDFToolbar(viewer, container, lang, options) {
 	// Span où l'on affiche le zoom actuel
 	this.scaleSpan = this.zoomMenu.children('span:not(.caret)');
 	// Bouton "Taille réelle"
-	this.zoomRealButton = this.buildMenuLI('pdf-zoom-real').click(this.viewer.zoomReal.bind(this.viewer));
+	this.zoomRealButton = this.buildMenuLI('pdf-zoom-real').click(() => this.viewer.zoomReal());
 	// Bouton "Page entière"
-	this.zoomFitButton = this.buildMenuLI('pdf-zoom-fit').click(this.viewer.zoomFit.bind(this.viewer));
+	this.zoomFitButton = this.buildMenuLI('pdf-zoom-fit').click(() => this.viewer.zoomFit());
 	// Bouton "Pleine largeur"
-	this.zoomWidthButton = this.buildMenuLI('pdf-zoom-width').click(this.viewer.zoomWidth.bind(this.viewer));
+	this.zoomWidthButton = this.buildMenuLI('pdf-zoom-width').click(() => this.viewer.zoomWidth());
+	// Bouton "Pleine hauteur"
+	this.zoomHeightButton = this.buildMenuLI('pdf-zoom-height').click(() => this.viewer.zoomHeight());
 	// Boutons ".. %"
-	this.zoomPctButtons = [50, 75, 100, 125, 150, 200, 300, 400].map(function(pct) { return '<a href="#" class="dropdown-item pdf-zoom-pct" data-value="' + pct + '">' + pct + ' %</a>'; });
-	this.container.on('click', 'a.pdf-zoom-pct', (function(event) {
-		this.viewer.changeScale(parseInt($(event.target).attr('data-value')));
-	}).bind(this));
+	this.zoomPctButtons = [50, 75, 100, 125, 150, 200, 300, 400].map(function(pct) { return '<button type="button" class="dropdown-item pdf-zoom-pct" data-value="' + pct + '">' + pct + ' %</button>'; });
+	this.container.on('click', '.pdf-zoom-pct', (event) => {
+		this.viewer.changeScale(parseInt($(event.target).attr('data-value')), 'percent');
+	});
 
 	// Bouton "Rotation anti-horaire"
 	this.rotateCCWButton = this.buildButton('pdf-rotate-ccw', 'fa-undo').click(this.viewer.rotateCounterClockWise.bind(this.viewer));
@@ -623,6 +661,7 @@ function PDFToolbar(viewer, container, lang, options) {
 				.append(this.zoomRealButton)
 				.append(this.zoomFitButton)
 				.append(this.zoomWidthButton)
+				.append(this.zoomHeightButton)
 				.append('<div class="dropdown-divider"></div>')
 				.append(this.zoomPctButtons)
 			)
@@ -647,6 +686,9 @@ PDFToolbar.prototype.onviewerloaded = function(event, data) {
 };
 
 PDFToolbar.prototype.onviewerscalechanged = function(event, data) {
+	this.zoomFitButton.toggleClass('active', data.scaleMode === 'fit');
+	this.zoomWidthButton.toggleClass('active', data.scaleMode === 'width');
+	this.zoomHeightButton.toggleClass('active', data.scaleMode === 'height');
 	this.scaleSpan.text(Math.floor(data.scale));
 };
 
@@ -676,7 +718,7 @@ PDFToolbar.prototype.buildMenuLI = function(name) {
 	var key = this.lang[name + '-key'];
 	if (key)
 		text = this.lang['pdf-action-text-format'].replace('%T%', text).replace('%K%', key);
-	return $('<a href="#" class="dropdown-item" />')
+	return $('<button type="button" class="dropdown-item" />')
 		.addClass(name)
 		.html(text);
 };
